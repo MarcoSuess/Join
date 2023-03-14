@@ -1,6 +1,6 @@
 <template>
   <v-card
-    width="400"
+    width="465"
     height="max-content"
     class="d-flex justify-start align-center flex-column pa-8"
   >
@@ -10,27 +10,11 @@
     </v-card-title>
 
     <v-container>
-      <v-text-field
-        v-model="email"
-        :rules="emailRules"
-        label="E-mail"
-        variant="outlined"
-        required
-        append-inner-icon="mdi-email-outline"
-      ></v-text-field>
-
-      <v-text-field
-        v-model="password"
-        :rules="rules"
-        label="Password"
-        type="password"
-        append-inner-icon="mdi-lock-outline"
-        variant="outlined"
-      ></v-text-field>
+      <AuthForm/>
     </v-container>
 
-    <v-card-actions class="mt-8 d-flex justify-space-around w-100">
-      <v-btn size="large" variant="tonal"> Login </v-btn>
+    <v-card-actions class="mt-2 d-flex w-100 pl-4">
+      <v-btn class="mr-4" size="large" variant="tonal"> Login </v-btn>
       <v-btn class="btn-outlined" size="large" variant="outlined"> Guest Log in </v-btn>
     </v-card-actions>
   </v-card>
@@ -41,15 +25,7 @@ definePageMeta({
   layout: "auth",
 });
 
-const email = ref("");
-const password = ref("");
 
-const rules = [
-  (value) => {
-    if (value) return true;
-    return "You must enter a first name.";
-  },
-];
 </script>
 
 <style lang="scss" scoped>
