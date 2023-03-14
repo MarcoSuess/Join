@@ -12,6 +12,11 @@
   definePageMeta({
     layout: "auth",
   });
+
+  const useAPI = useRuntimeConfig();
+
+  console.log(useAPI.apiSignIn);
+
   </script>
   
   <style lang="scss" scoped>

@@ -40,7 +40,13 @@
   </v-container>
 
   <v-card-actions class="mt-2 d-flex w-100 pl-4">
-    <v-btn v-if="!isRegisterForm" class="mr-4" size="large" variant="tonal">
+    <v-btn
+      v-if="!isRegisterForm"
+      :disabled="!checkLoginValues"
+      class="mr-4"
+      size="large"
+      variant="tonal"
+    >
       Login
     </v-btn>
     <v-btn
@@ -51,7 +57,14 @@
     >
       Guest Log in
     </v-btn>
-    <v-btn v-if="isRegisterForm" class="mr-4" size="large" variant="tonal">
+    <v-btn
+      @click="registerUser"
+      :disabled="!checkRegisterValues"
+      v-if="isRegisterForm"
+      class="mr-4"
+      size="large"
+      variant="tonal"
+    >
       Sign up
     </v-btn>
   </v-card-actions>
@@ -69,6 +82,37 @@ defineProps({
 const userName = ref("");
 const email = ref("");
 const password = ref("");
+
+const checkRegisterValues = computed(() => {
+  if (
+    nameRules[0](userName.value) === true &&
+    emailRules[0](email.value) === true &&
+    passwordRules[1](password.value) === true
+  ) {
+    return true;
+  }
+
+  return false;
+});
+
+const registerUser = () => {
+  console.log("register");
+};
+
+const checkLoginValues = computed(() => {
+  if (
+    emailRules[0](email.value) === true &&
+    passwordRules[1](password.value) === true
+  ) {
+    return true;
+  }
+
+  return false;
+});
+
+const loginUser = () => {
+  console.log("login");
+};
 </script>
 
 <style lang="scss" scoped>

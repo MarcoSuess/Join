@@ -18,7 +18,6 @@
 
 <script lang="ts" setup>
 const route = useRoute();
-console.log(route.name);
 </script>
 
 <style scoped lang="scss">
