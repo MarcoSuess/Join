@@ -5,20 +5,29 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "nuxt": "^3.2.3"
+    "@types/node": "^18.15.0",
+    "eslint": "^8.35.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "nuxt": "^3.2.3",
+    "sass": "^1.58.3"
   },
   "dependencies": {
     "@mdi/font": "^7.1.96",
     "@pinia/nuxt": "^0.4.7",
     "pinia": "^2.0.33",
-    "sass": "^1.58.3",
-    "vite-plugin-vuetify": "^1.0.2",
-    "vuetify": "^3.1.4"
+    "vuetify": "^3.1.4",
+    "vite-plugin-vuetify": "^1.0.2"
   },
   "overrides": {
     "vue": "latest"
   }
+
 }
+
+
+
