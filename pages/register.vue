@@ -13,9 +13,7 @@
     layout: "auth",
   });
 
-  const useAPI = useRuntimeConfig();
-
-  console.log(useAPI.apiSignIn);
+  
 
   </script>
   

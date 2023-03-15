@@ -18,3 +18,11 @@ export const passwordRules = [
     (value: string) => !!value || "Please type password.",
     (value: string) => (value && value.length >= 6) || "minimum 6 characters",
 ];
+
+export const phoneRules = [
+     (value: string) => {
+        if (value?.length > 9 && /[0-9-]+/.test(value)) return true
+
+        return 'Phone number needs to be at least 9 digits.'
+     }
+]

@@ -11,13 +11,35 @@
   <v-container>
     <v-text-field
       v-if="isRegisterForm"
-      v-model="userName"
+      v-model="firstName"
       :rules="nameRules"
-      label="Name*"
+      label="First Name*"
       variant="outlined"
       required
       append-inner-icon="mdi-account-outline"
     ></v-text-field>
+
+    <v-text-field
+      v-if="isRegisterForm"
+      v-model="lastName"
+      :rules="nameRules"
+      label="Last Name*"
+      variant="outlined"
+      required
+      append-inner-icon="mdi-account-outline"
+    ></v-text-field>
+
+    <v-text-field
+      v-if="isRegisterForm"
+      v-model="phoneNumber"
+      :rules="phoneRules"
+      label="Phone Number*"
+      variant="outlined"
+      required
+      append-inner-icon="mdi-phone-outline"
+    ></v-text-field>
+
+
 
     <v-text-field
       v-model="email"
@@ -71,6 +93,10 @@
 </template>
 
 <script setup lang="ts">
+
+import { useRegisterStore } from "@/stores/register";
+import { authStore } from "@/stores/auth";
+
 defineProps({
   isRegisterForm: {
     default() {
@@ -79,13 +105,17 @@ defineProps({
   },
 });
 
-const userName = ref("");
+const firstName = ref("");
+const lastName = ref("");
+const phoneNumber = ref("")
 const email = ref("");
 const password = ref("");
 
 const checkRegisterValues = computed(() => {
   if (
-    nameRules[0](userName.value) === true &&
+    nameRules[0](firstName.value) === true &&
+    nameRules[0](lastName.value) === true &&
+    phoneRules[0](phoneNumber.value) === true &&
     emailRules[0](email.value) === true &&
     passwordRules[1](password.value) === true
   ) {
@@ -95,8 +125,18 @@ const checkRegisterValues = computed(() => {
   return false;
 });
 
-const registerUser = () => {
-  console.log("register");
+const registerUser = async () => {
+  const registerStore = useRegisterStore();
+  await registerStore.registerUser({
+    firstName: firstName.value,
+    lastName: lastName.value,
+    phoneNumber: phoneNumber.value,
+    email: email.value,
+    password: password.value
+  });
+
+  await authStore().auth();
+
 };
 
 const checkLoginValues = computed(() => {
@@ -132,5 +172,9 @@ h1 {
   top: 48px;
   color: $secondary;
   font-size: 1.8rem;
+}
+
+.v-text-field {
+    margin-top: 8px;
 }
 </style>

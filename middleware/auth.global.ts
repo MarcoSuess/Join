@@ -1,16 +1,22 @@
+import { authStore } from "~~/stores/auth"
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
-   /*  const user = useUserStore()
+
+    if(process.client) {
+
+      const authUserStore = authStore()
   
-    if (!user.initialized) {
-      await user.auth()
+      if (!authUserStore.initialized) {
+        await authUserStore.auth()
+      }
+  
+  
+      console.log(to);
+
+
+
     }
-  
-    if (to.meta.layout === 'login' && user.isLoggedIn) {
-      return navigateTo('/')
-    }
-  
-    if (to.meta.layout !== 'login' && !user.isLoggedIn) {
-      return navigateTo('/login')
-    } */
+
+    
   })
   
