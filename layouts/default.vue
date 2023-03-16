@@ -1,14 +1,107 @@
 <template>
-   
-            <h1>dashboard layout</h1>
-            <slot></slot>
-  
+  <v-card>
+    <v-layout>
+      <v-navigation-drawer width="174">
+        <div class="nav-bar">
+          <img src="../assets/images/logo.png" alt="logo" />
+
+          <v-list width="100%">
+            <v-list-item   prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard"></v-list-item>
+            <v-list-item   prepend-icon="mdi-human-male-board-poll" title="Board" value="board"></v-list-item>
+            <v-list-item   prepend-icon="mdi-pencil-plus" title="Add Task" value="addTask"></v-list-item>
+            <v-list-item   prepend-icon="mdi-contacts" title="Contacts" value="contacts"></v-list-item>
+          </v-list>
+
+         
+        </div>
+
+        <template v-slot:append>
+        <div class="logout pb-16">
+       <v-btn prepend-icon="mdi-logout" block>Logout</v-btn>
+        </div>
+        </template>
+
+        
+      </v-navigation-drawer>
+
+      <v-app-bar title="Kanban Project Managemet Tool">
+        <div class="user-profile">
+            <v-icon icon="mdi-account-circle"></v-icon>
+        </div>
+      </v-app-bar>
+
+      <v-main style="min-height: 100vh">
+        <v-container>
+          <slot></slot>
+        </v-container>
+      </v-main>
+    </v-layout>
+  </v-card>
 </template>
 
 <script setup>
+import { authStore } from "~~/stores/auth";
 
+const userData = authStore().userData;
 </script>
 
 <style lang="scss" scoped>
 
+.v-app-bar {
+  color: $dark-navy;
+}
+
+.nav-bar {
+  background-color: $dark-navy !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding-top: 48px;
+  color: white;
+
+  img {
+        margin-bottom: 128px;
+  }
+}
+
+.v-list-item {
+        margin-top: 24px;
+        flex-direction: column;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+    :deep(.v-icon) {
+    -webkit-margin-end: 0px !important;
+    margin-inline-end: 0px !important;
+    font-size: 48px;
+    }
+        
+}
+
+.logout {
+    background: $dark-navy;
+    
+}
+
+
+
+
+
+.v-list {
+
+}
+
+.user-profile { 
+    :deep(.v-icon) {
+    -webkit-margin-end: 0px !important;
+    margin-inline-end: 0px !important;
+    font-size: 48px;
+    margin-right: 32px !important;
+    }
+}
 </style>
