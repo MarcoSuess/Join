@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink v-if="isRegisterForm" to="/login">
+  <NuxtLink v-if="isRegisterForm" to="/">
     <v-icon class="backIcon" icon="mdi-arrow-left"></v-icon>
   </NuxtLink>
 
@@ -38,8 +38,6 @@
       required
       append-inner-icon="mdi-phone-outline"
     ></v-text-field>
-
-
 
     <v-text-field
       v-model="email"
@@ -93,7 +91,6 @@
 </template>
 
 <script setup lang="ts">
-
 import { useRegisterStore } from "@/stores/register";
 import { authStore } from "@/stores/auth";
 
@@ -107,7 +104,7 @@ defineProps({
 
 const firstName = ref("");
 const lastName = ref("");
-const phoneNumber = ref("")
+const phoneNumber = ref("");
 const email = ref("");
 const password = ref("");
 
@@ -127,16 +124,17 @@ const checkRegisterValues = computed(() => {
 
 const registerUser = async () => {
   const registerStore = useRegisterStore();
-  await registerStore.registerUser({
-    firstName: firstName.value,
-    lastName: lastName.value,
-    phoneNumber: phoneNumber.value,
-    email: email.value,
-    password: password.value
-  });
+  await registerStore.registerUser(
+    {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      phoneNumber: phoneNumber.value,
+      email: email.value,
+    },
+    password.value
+  );
 
   await authStore().auth();
-
 };
 
 const checkLoginValues = computed(() => {
@@ -175,6 +173,6 @@ h1 {
 }
 
 .v-text-field {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 </style>

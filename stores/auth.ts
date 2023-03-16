@@ -7,19 +7,24 @@ export const authStore = defineStore('auth', () => {
     const userData = ref<any>(null)
   
     async function auth() {
-      const id = localStorage.getItem('user_id')
-      const token = localStorage.getItem('user_token')
-  
-      if (!id || !token) {
+      const userID = localStorage.getItem('user_id');
+      const userToken = localStorage.getItem('user_token');
+   
+      if (!userID || !userToken) {
         return
       }
   
       loading.value = true
       try {
-        const getUser = await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/users/${id}.json?auth=${token}`, {
+        const getUser: any = await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/users/${userID}.json?auth=${userToken}`, {
             method: 'GET',
         })
-        console.log('res', getUser)
+     
+       
+       const getUserKey = Object.keys(getUser._data)[0];
+       userData.value = await getUser._data[getUserKey];
+       isLoggedIn.value = true;
+       console.log(userData.value);
   
       } catch (error) {
         console.error('[auth store]', error)

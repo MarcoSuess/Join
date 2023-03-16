@@ -7,14 +7,14 @@ export const useRegisterStore = defineStore('register', () => {
     const runtimeConfig = useRuntimeConfig();
 
 
-    async function registerUser(userData: User) {
+    async function registerUser(userData: User, userPassword: string) {
 
         try {
             const getRegisterResponse = await $fetch.raw(runtimeConfig.public.apiSignUp, {
                 method: 'POST',
                 body: JSON.stringify({
                     email: userData.email,
-                    password: userData.password,
+                    password: userPassword,
                     returnSecureToken: true
                 })
             })
@@ -33,10 +33,13 @@ export const useRegisterStore = defineStore('register', () => {
                 method: 'POST',
                 body: JSON.stringify(user)
             })
+
             console.log(createUser);
-        
+
+
             localStorage.setItem('user_id', registerResponse.localId);
-            localStorage.setItem('user_token', registerResponse.idToken)
+            localStorage.setItem('user_token', registerResponse.idToken);
+
 
 
         } catch (error) {
@@ -61,5 +64,4 @@ interface User {
     lastName: string,
     phoneNumber: string,
     email: string,
-    password: string
 }
