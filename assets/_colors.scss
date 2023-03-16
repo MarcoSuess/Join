@@ -2,7 +2,7 @@ $primary: #49240F;
 $secondary: rgb(41, 171, 226);
 $dark-navy: rgb(42, 54, 71);
 $white: rgb(246, 247, 248);
-
+$light-grey: rgb(205, 205, 205);
 
 .v-btn {
     background-color: $dark-navy;
@@ -13,4 +13,9 @@ $white: rgb(246, 247, 248);
 .btn-outlined {
         background: none;
         color: $dark-navy;
+}
+
+
+h1 {
+    color: $dark-navy;
 }

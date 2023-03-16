@@ -6,10 +6,11 @@
           <img src="../assets/images/logo.png" alt="logo" />
 
           <v-list width="100%">
-            <v-list-item   prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard"></v-list-item>
-            <v-list-item   prepend-icon="mdi-human-male-board-poll" title="Board" value="board"></v-list-item>
-            <v-list-item   prepend-icon="mdi-pencil-plus" title="Add Task" value="addTask"></v-list-item>
-            <v-list-item   prepend-icon="mdi-contacts" title="Contacts" value="contacts"></v-list-item>
+          
+            <v-list-item to="/app/dashboard"  prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard"></v-list-item>
+            <v-list-item to="/app/board"   prepend-icon="mdi-human-male-board-poll" title="Board" value="board"></v-list-item>
+            <v-list-item to="/app/add-task"  prepend-icon="mdi-pencil-plus" title="Add Task" value="addTask"></v-list-item>
+            <v-list-item  to="/app/contacts" prepend-icon="mdi-contacts" title="Contacts" value="contacts"></v-list-item>
           </v-list>
 
          
