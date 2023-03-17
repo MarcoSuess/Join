@@ -7,6 +7,11 @@
     <div class="form-container w-50 d-flex flex-column align-center">
       <div class="text-subtitle-1 text-medium-emphasis w-75">Title</div>
       <v-text-field
+        v-model="state.title"
+        :error-messages="v$.title.$errors.map((e) => e.$message)"
+        @input="v$.title.$touch"
+        @blur="v$.title.$touch"
+        :class="{ warningBorderInput: v$.title.$errors.length }"
         placeholder="Enter a title"
         required
         variant="solo"
@@ -22,6 +27,11 @@
 
       <div class="text-subtitle-1 text-medium-emphasis w-75">Category</div>
       <v-select
+        v-model="state.category"
+        :error-messages="v$.category.$errors.map((e) => e.$message)"
+        @input="v$.category.$touch"
+        @blur="v$.category.$touch"
+        :class="{ warningBorderSelect: v$.category.$errors.length }"
         placeholder="Select a task category"
         class="w-75"
         :items="[
@@ -37,6 +47,11 @@
 
       <div class="text-subtitle-1 text-medium-emphasis w-75">Assigned to</div>
       <v-select
+        v-model="state.assignedTo"
+        :error-messages="v$.assignedTo.$errors.map((e) => e.$message)"
+        @input="v$.assignedTo.$touch"
+        @blur="v$.assignedTo.$touch"
+        :class="{ warningBorderSelect: v$.assignedTo.$errors.length }"
         class="w-75"
         clearable
         chips
@@ -64,6 +79,11 @@
     <div class="form-container w-50 d-flex flex-column align-center">
       <div class="text-subtitle-1 text-medium-emphasis w-75">Due date</div>
       <v-text-field
+        v-model="state.dueDate"
+        :error-messages="v$.dueDate.$errors.map((e) => e.$message)"
+        @input="v$.dueDate.$touch"
+        @blur="v$.dueDate.$touch"
+        :class="{ warningBorderInput: v$.dueDate.$errors.length }"
         required
         variant="solo"
         type="date"
@@ -74,21 +94,39 @@
       <v-container class="w-75 d-flex flex-row prio-container">
         <ul>
           <li>
-            <input type="radio" value="urgent" name="radio" id="radio1" />
+            <input
+              v-model="state.prio"
+              type="radio"
+              value="urgent"
+              name="radio"
+              id="radio1"
+            />
             <label v-ripple for="radio1"
               >Urgent
               <img src="@/assets/icons/Urgent.png" alt="urgent" />
             </label>
           </li>
           <li>
-            <input type="radio" value="medium" name="radio" id="radio2" />
+            <input
+              v-model="state.prio"
+              type="radio"
+              value="medium"
+              name="radio"
+              id="radio2"
+            />
             <label v-ripple for="radio2"
               >Medium
               <img src="@/assets/icons/Medium.png" alt="medium" />
             </label>
           </li>
           <li>
-            <input type="radio" value="low" name="radio" id="radio3" />
+            <input
+              v-model="state.prio"
+              type="radio"
+              value="low"
+              name="radio"
+              id="radio3"
+            />
             <label v-ripple for="radio3"
               >Low
               <img src="@/assets/icons/Low.png" alt="low" />
@@ -100,6 +138,7 @@
       <div class="text-subtitle-1 text-medium-emphasis w-75">Subtasks</div>
 
       <v-text-field
+        placeholder="Add new Subtask"
         v-model="subInput"
         variant="solo"
         class="w-75"
@@ -113,7 +152,10 @@
           </v-icon>
         </template>
       </v-text-field>
-      <v-container class="w-75 overflow-y-auto" style="max-height: 128px; min-height: 128px;">
+      <v-container
+        class="w-75 overflow-y-auto"
+        style="max-height: 128px; min-height: 128px"
+      >
         <v-chip
           v-for="(subTitle, index) in subtitles"
           :key="subTitle"
@@ -125,14 +167,31 @@
         </v-chip>
       </v-container>
       <v-container class="w-75 pl-0 mt-12">
-        <v-btn class="mr-8" append-icon="mdi-close" color="error" variant="plain"> Clear </v-btn>
-        <v-btn  class="btn-default" append-icon="mdi-check"> Create Task </v-btn>
+        <v-btn
+          class="mr-8"
+          append-icon="mdi-close"
+          color="error"
+          variant="plain"
+          @click="clearForm"
+        >
+          Clear
+        </v-btn>
+        <v-btn
+          @click="submitForm()"
+          class="btn-default"
+          append-icon="mdi-check"
+        >
+          Create Task
+        </v-btn>
       </v-container>
     </div>
   </v-container>
 </template>
 
 <script setup>
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+
 const subInput = ref("");
 const subtitles = ref([]);
 
@@ -151,6 +210,44 @@ const removeSubTitle = (subTitle) => {
   subtitles.value.splice(subtitles.value.indexOf(subTitle), 1);
   console.log(subTitle);
 };
+
+const initialState = {
+  title: "",
+  description: "",
+  category: null,
+  assignedTo: [],
+  dueDate: null,
+  prio: 'urgent',
+  subTasks: [],
+};
+
+const state = reactive({
+  ...initialState,
+});
+
+const rules = {
+  title: { required },
+  category: { required },
+  assignedTo: { required },
+  dueDate: { required },
+};
+
+const v$ = useVuelidate(rules, state);
+
+const clearForm = () => {
+  v$.value.$reset();
+
+  for (const [key, value] of Object.entries(initialState)) {
+    state[key] = value;
+  }
+};
+
+const submitForm = async () => {
+  const isFormCorrect = await v$.value.$validate();
+  console.log(isFormCorrect);
+
+  if (!isFormCorrect) return;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -158,9 +255,6 @@ const removeSubTitle = (subTitle) => {
   color: $dark-navy !important;
   font-weight: 900;
 }
-
-
-
 
 .prio-container {
   padding-top: 0;
@@ -198,6 +292,20 @@ label {
 
   img {
     margin-left: 8px;
+  }
+}
+
+.warningBorderInput {
+  :deep(input) {
+    border: 1px solid red;
+    transition: all 530ms ease-in-out;
+  }
+}
+
+.warningBorderSelect {
+  :deep(.v-input__control) {
+    border: 1px solid red;
+    transition: all 530ms ease-in-out;
   }
 }
 </style>
