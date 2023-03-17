@@ -18,7 +18,7 @@
 
         <template v-slot:append>
         <div class="logout pb-16">
-       <v-btn prepend-icon="mdi-logout" block>Logout</v-btn>
+       <v-btn class="btn-default" prepend-icon="mdi-logout" block>Logout</v-btn>
         </div>
         </template>
 
