@@ -191,9 +191,11 @@
 <script setup>
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import {taskStore} from "@/stores/task"
 
 const subInput = ref("");
 const subtitles = ref([]);
+
 
 const addSubtitle = () => {
   if (subInput.value) {
@@ -242,11 +244,18 @@ const clearForm = () => {
   }
 };
 
+
+
 const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
   console.log(isFormCorrect);
 
   if (!isFormCorrect) return;
+
+  const useTaskStore = taskStore();
+  console.log(state);
+  useTaskStore.createTask(state)
+
 };
 </script>
 
