@@ -20,6 +20,7 @@
 
       <div class="text-subtitle-1 text-medium-emphasis w-75">Description</div>
       <v-textarea
+        v-model="state.description"
         class="w-75"
         placeholder="Enter a Description"
         variant="solo"
@@ -157,13 +158,13 @@
         style="max-height: 128px; min-height: 128px"
       >
         <v-chip
-          v-for="(subTitle, index) in subtitles"
-          :key="subTitle"
+          v-for="(subTask) in  state.subTasks"
+          :key="subTask"
           class="ma-2"
           closable
-          @click:close="removeSubTitle(subTitle)"
+          @click:close="removeSubTitle(subTask)"
         >
-          {{ subTitle }}
+          {{ subTask }}
         </v-chip>
       </v-container>
       <v-container class="w-75 pl-0 mt-12">
@@ -193,25 +194,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import {taskStore} from "@/stores/task"
 
-const subInput = ref("");
-const subtitles = ref([]);
 
-
-const addSubtitle = () => {
-  if (subInput.value) {
-    subtitles.value.unshift(subInput.value);
-    clearSubInput();
-  }
-};
-
-const clearSubInput = () => {
-  subInput.value = "";
-};
-
-const removeSubTitle = (subTitle) => {
-  subtitles.value.splice(subtitles.value.indexOf(subTitle), 1);
-  console.log(subTitle);
-};
 
 const initialState = {
   title: "",
@@ -245,6 +228,24 @@ const clearForm = () => {
 };
 
 
+const subInput = ref("");
+
+const addSubtitle = () => {
+  if (subInput.value) {
+    state.subTasks.unshift(subInput.value);
+    clearSubInput();
+  }
+};
+
+const clearSubInput = () => {
+  subInput.value = "";
+};
+
+const removeSubTitle = (subTask) => {
+  state.subTasks.splice(state.subTasks.indexOf(subTask), 1);
+
+};
+
 
 const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
@@ -252,9 +253,9 @@ const submitForm = async () => {
 
   if (!isFormCorrect) return;
 
-  const useTaskStore = taskStore();
-  console.log(state);
-  useTaskStore.createTask(state)
+
+
+  taskStore().createTask(state)
 
 };
 </script>

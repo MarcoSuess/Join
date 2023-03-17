@@ -8,7 +8,7 @@ export const taskStore = defineStore('task', () => {
     async function createTask(task: Task) {
 
         try {
-            await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/tasks/task.json`, {
+            await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/tasks.json`, {
                 method: 'POST',
                 body: JSON.stringify(task)
             }).then( (res) => {
