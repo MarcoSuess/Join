@@ -189,7 +189,7 @@
   </v-container>
 </template>
 
-<script setup>
+<script  setup>
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { taskStore } from "@/stores/task";

@@ -49,7 +49,7 @@
       </v-app-bar>
 
       <v-main style="min-height: 100vh">
-        <v-container>
+        <v-container >
           <slot></slot>
         </v-container>
       </v-main>

@@ -18,7 +18,7 @@ export const taskStore = defineStore('task', () => {
                 body: JSON.stringify(newTask)
             }).then((res) => {
                 console.log(res);
-
+              
             })
         } catch (error) {
             console.log('[task store, Post]', error);
