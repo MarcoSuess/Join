@@ -94,7 +94,7 @@
       <div class="text-subtitle-1 text-medium-emphasis w-75">Prio</div>
       <v-container class="w-75 d-flex flex-row prio-container">
         <ul>
-          <li>
+          <li class="urgency">
             <input
               v-model="state.prio"
               type="radio"
@@ -107,7 +107,7 @@
               <img src="@/assets/icons/Urgent.png" alt="urgent" />
             </label>
           </li>
-          <li>
+          <li class="medium">
             <input
               v-model="state.prio"
               type="radio"
@@ -120,7 +120,7 @@
               <img src="@/assets/icons/Medium.png" alt="medium" />
             </label>
           </li>
-          <li>
+          <li class="low">
             <input
               v-model="state.prio"
               type="radio"
@@ -158,7 +158,7 @@
         style="max-height: 128px; min-height: 128px"
       >
         <v-chip
-          v-for="(subTask) in  state.subTasks"
+          v-for="subTask in state.subTasks"
           :key="subTask"
           class="ma-2"
           closable
@@ -192,9 +192,7 @@
 <script setup>
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import {taskStore} from "@/stores/task"
-
-
+import { taskStore } from "@/stores/task";
 
 const initialState = {
   title: "",
@@ -202,7 +200,7 @@ const initialState = {
   category: null,
   assignedTo: [],
   dueDate: null,
-  prio: 'urgent',
+  prio: "urgent",
   subTasks: [],
 };
 
@@ -225,8 +223,9 @@ const clearForm = () => {
   for (const [key, value] of Object.entries(initialState)) {
     state[key] = value;
   }
-};
 
+  state.subTasks = [];
+};
 
 const subInput = ref("");
 
@@ -243,9 +242,7 @@ const clearSubInput = () => {
 
 const removeSubTitle = (subTask) => {
   state.subTasks.splice(state.subTasks.indexOf(subTask), 1);
-
 };
-
 
 const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
@@ -253,10 +250,7 @@ const submitForm = async () => {
 
   if (!isFormCorrect) return;
 
-
-
-  taskStore().createTask(state)
-
+  taskStore().createTask(state);
 };
 </script>
 
@@ -289,8 +283,24 @@ const submitForm = async () => {
     padding: 8px;
     font-size: 0.9em;
   }
+
+}
+
+.urgency {
   input:checked + label {
-    background: rgb(42 127 215);
+    background: rgb(255 79 62 / 80%);
+  }
+}
+
+.medium {
+  input:checked + label {
+    background: rgb(233 126 16);
+  }
+}
+
+.low {
+  input:checked + label {
+    background: rgb(124 175 2);
   }
 }
 
