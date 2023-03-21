@@ -9,33 +9,75 @@
   >
     <div class="column w-25">
       <h3>To do</h3>
-      <div class="dropList">
-        <v-card>
+
+      <draggable
+        class="list-group  dropList"
+        v-model="taskArr"
+        group="tasks"
+        @sort="log"
+        @add="log"
+      >
+        <v-card
+          class="list-group-item"
+          v-for="(task, index) in taskArr"
+          :key="index"
+        >
           <v-chip> IT </v-chip>
-          <h5 class="mt-4">Title Card Example</h5>
+          <h5 class="mt-4">{{ task.title }}</h5>
 
           <h6 class="mt-4">Subtasks Completed</h6>
-          <v-progress-linear v-model="skill" :color="skill === 100 ? 'green' : 'orange'" height="25">
+          <v-progress-linear
+            v-model="skill"
+            :color="skill === 100 ? 'green' : 'orange'"
+            height="25"
+          >
+            <template #default="{ value }">
+              <strong>{{ Math.ceil(value) }}%</strong>
+            </template>
+          </v-progress-linear>
+
+          <div class="labels">
+            <div class="assignedUser"></div>
+            <img src="@/assets/icons/Low.png" />
+          </div>
+        </v-card>
+      </draggable>
+    </div>
+
+    <div class="column w-25">
+      <h3>In progress</h3>
+
+      <draggable
+        class="list-group dropList"
+        :list="testarr"
+        group="tasks"
+        @change="log"
+      >
+        <v-card
+          class="list-group-item"
+          v-for="(task, index) in testarr"
+          :key="index"
+        >
+          <v-chip> IT </v-chip>
+          <h5 class="mt-4">{{ task.title }}</h5>
+
+          <h6 class="mt-4">Subtasks Completed</h6>
+          <v-progress-linear
+            v-model="skill"
+            :color="skill === 100 ? 'green' : 'orange'"
+            height="25"
+          >
             <template v-slot:default="{ value }">
               <strong>{{ Math.ceil(value) }}%</strong>
             </template>
           </v-progress-linear>
 
           <div class="labels">
-            <div class="assignedUser">
-
-            </div>
-            <img src="@/assets/icons/Low.png">
-
+            <div class="assignedUser"></div>
+            <img src="@/assets/icons/Low.png" />
           </div>
-
         </v-card>
-      </div>
-    </div>
-
-    <div class="column w-25">
-      <h3>In progress</h3>
-      <div class="dropList"></div>
+      </draggable>
     </div>
 
     <div class="column w-25">
@@ -52,9 +94,25 @@
 
 <script setup>
 import { taskStore } from "@/stores/task";
-console.log(taskStore().tasks);
-const tasks = taskStore().tasks;
-const skill = ref(100);
+const tasks = toRaw(taskStore().tasks);
+const skill = ref(80);
+
+const testarr = ref([])
+
+const getList = (taskStatus) => {
+  return ref(tasks.filter((task) => task.status == taskStatus));
+};
+
+
+const taskArr = getList(0);
+
+
+
+
+
+const log = (event, ) => {
+    console.log(testarr.value);
+};
 </script>
 
 <style lang="scss" scoped>
