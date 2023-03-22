@@ -10,83 +10,24 @@
     <div class="column w-25">
       <h3>To do</h3>
 
-      <draggable
-        class="list-group dropList"
-        :list="todo"
-        group="tasks"
-        @change="changeTask($event, 0)"
-      >
-        <v-card
-          class="list-group-item"
-          v-for="(task, index) in todo"
-          :key="index"
-        >
-          <v-chip> IT </v-chip>
-          <h5 class="mt-4">{{ task.title }}</h5>
-
-          <h6 class="mt-4">Subtasks Completed</h6>
-          <v-progress-linear
-            v-model="skill"
-            :color="skill === 100 ? 'green' : 'orange'"
-            height="25"
-          >
-            <template #default="{ value }">
-              <strong>{{ Math.ceil(value) }}%</strong>
-            </template>
-          </v-progress-linear>
-
-          <div class="labels">
-            <div class="assignedUser"></div>
-            <img src="@/assets/icons/Low.png" />
-          </div>
-        </v-card>
-      </draggable>
+      <BoardDraggable :item-list="todo" :item-status="0" @change-item="changeTask($event)"/>
+     
     </div>
 
     <div class="column w-25">
       <h3>In progress</h3>
-
-      <draggable
-        class="list-group dropList"
-        :list="inProgress"
-        group="tasks"
-        @change="changeTask($event, 1)"
-      >
-        <v-card
-          class="list-group-item"
-          v-for="(task, index) in inProgress"
-          :key="index"
-        >
-          <v-chip> IT </v-chip>
-          <h5 class="mt-4">{{ task.title }}</h5>
-
-          <h6 class="mt-4">Subtasks Completed</h6>
-          <v-progress-linear
-            v-model="skill"
-            :color="skill === 100 ? 'green' : 'orange'"
-            height="25"
-          >
-            <template v-slot:default="{ value }">
-              <strong>{{ Math.ceil(value) }}%</strong>
-            </template>
-          </v-progress-linear>
-
-          <div class="labels">
-            <div class="assignedUser"></div>
-            <img src="@/assets/icons/Low.png" />
-          </div>
-        </v-card>
-      </draggable>
+        
+      <BoardDraggable :item-list="inProgress" :item-status="1" @change-item="changeTask($event)"/>
     </div>
 
     <div class="column w-25">
       <h3>Awaiting Feedback</h3>
-      <div class="dropList"></div>
+      <BoardDraggable :item-list="awaitFeedback" :item-status="2" @change-item="changeTask($event)"/>
     </div>
 
     <div class="column w-25">
       <h3>Done</h3>
-      <div class="dropList"></div>
+      <BoardDraggable :item-list="done" :item-status="3" @change-item="changeTask($event)"/>
     </div>
   </v-container>
 </template>
@@ -94,33 +35,26 @@
 <script setup>
 import { taskStore } from "@/stores/task";
 
-const skill = ref(50);
+
 
 const todo = ref(taskStore().tasks.filter((t) => t.status == 0)).value;
 const inProgress = ref(taskStore().tasks.filter((t) => t.status == 1)).value;
+const awaitFeedback = ref(taskStore().tasks.filter((t) => t.status == 2)).value;
+const done = ref(taskStore().tasks.filter((t) => t.status == 3)).value;
 
 console.log(taskStore().tasks);
 
-const changeTask = (event, status) => {
-  if (event.added) {
-    const newTask = { ...event.added.element, status: status };
-    taskStore().patchTask(newTask);
+const changeTask = async (event) => {
+  if (event[0].added) {
+    const newTask = await { ...event[0].added.element, status: event[1] };
+    await taskStore().patchTask(newTask);
   }
 };
 
 </script>
 
 <style lang="scss" scoped>
-.dropList {
-  background-color: #0000000a;
-  height: 60vh;
-  width: 100%;
-  overflow-y: auto;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
 
 .column {
   margin-right: 64px;
@@ -130,25 +64,5 @@ h3 {
   min-height: 64px;
 }
 
-.v-card {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  margin-top: 16px;
-  border-radius: 8px;
-  color: $dark-navy;
-  width: 90%;
-}
 
-.v-chip {
-  background-color: $dark-navy;
-  color: white;
-  padding: 16px;
-  margin-bottom: 8px;
-}
-
-h5 {
-  line-height: normal;
-}
 </style>
