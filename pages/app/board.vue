@@ -11,15 +11,14 @@
       <h3>To do</h3>
 
       <draggable
-        class="list-group  dropList"
-        v-model="taskArr"
+        class="list-group dropList"
+        :list="todo"
         group="tasks"
-        @sort="log"
-        @add="log"
+        @change="changeTask($event, 0)"
       >
         <v-card
           class="list-group-item"
-          v-for="(task, index) in taskArr"
+          v-for="(task, index) in todo"
           :key="index"
         >
           <v-chip> IT </v-chip>
@@ -49,13 +48,13 @@
 
       <draggable
         class="list-group dropList"
-        :list="testarr"
+        :list="inProgress"
         group="tasks"
-        @change="log"
+        @change="changeTask($event, 1)"
       >
         <v-card
           class="list-group-item"
-          v-for="(task, index) in testarr"
+          v-for="(task, index) in inProgress"
           :key="index"
         >
           <v-chip> IT </v-chip>
@@ -94,25 +93,21 @@
 
 <script setup>
 import { taskStore } from "@/stores/task";
-const tasks = toRaw(taskStore().tasks);
-const skill = ref(80);
 
-const testarr = ref([])
+const skill = ref(50);
 
-const getList = (taskStatus) => {
-  return ref(tasks.filter((task) => task.status == taskStatus));
+const todo = ref(taskStore().tasks.filter((t) => t.status == 0)).value;
+const inProgress = ref(taskStore().tasks.filter((t) => t.status == 1)).value;
+
+console.log(taskStore().tasks);
+
+const changeTask = (event, status) => {
+  if (event.added) {
+    const newTask = { ...event.added.element, status: status };
+    taskStore().patchTask(newTask);
+  }
 };
 
-
-const taskArr = getList(0);
-
-
-
-
-
-const log = (event, ) => {
-    console.log(testarr.value);
-};
 </script>
 
 <style lang="scss" scoped>
