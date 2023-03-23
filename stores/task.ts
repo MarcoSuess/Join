@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { Task, TaskStatus } from "~~/composables/task";
+import type { Task } from "~~/types/task";
+
 
 
 export const taskStore = defineStore('task', () => {
@@ -10,6 +11,9 @@ export const taskStore = defineStore('task', () => {
     async function createTask(task: Task) {
 
         const newTask = { ...task, status: TaskStatus.Todo }
+
+       
+        
 
         try {
             await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/tasks.json`, {

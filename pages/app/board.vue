@@ -10,32 +10,45 @@
     <div class="column w-25">
       <h3>To do</h3>
 
-      <BoardDraggable :item-list="todo" :item-status="0" @change-item="changeTask($event)"/>
-     
+      <BoardDraggable
+        :item-list="todo"
+        :item-status="0"
+        @change-item="changeTask($event)"
+      />
     </div>
 
     <div class="column w-25">
       <h3>In progress</h3>
-        
-      <BoardDraggable :item-list="inProgress" :item-status="1" @change-item="changeTask($event)"/>
+
+      <BoardDraggable
+        :item-list="inProgress"
+        :item-status="1"
+        @change-item="changeTask($event)"
+      />
     </div>
 
     <div class="column w-25">
       <h3>Awaiting Feedback</h3>
-      <BoardDraggable :item-list="awaitFeedback" :item-status="2" @change-item="changeTask($event)"/>
+      <BoardDraggable
+        :item-list="awaitFeedback"
+        :item-status="2"
+        @change-item="changeTask($event)"
+      />
     </div>
 
     <div class="column w-25">
       <h3>Done</h3>
-      <BoardDraggable :item-list="done" :item-status="3" @change-item="changeTask($event)"/>
+      <BoardDraggable
+        :item-list="done"
+        :item-status="3"
+        @change-item="changeTask($event)"
+      />
     </div>
   </v-container>
 </template>
 
 <script setup>
 import { taskStore } from "@/stores/task";
-
-
 
 const todo = ref(taskStore().tasks.filter((t) => t.status == 0)).value;
 const inProgress = ref(taskStore().tasks.filter((t) => t.status == 1)).value;
@@ -50,12 +63,9 @@ const changeTask = async (event) => {
     await taskStore().patchTask(newTask);
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
-
-
 .column {
   margin-right: 64px;
 }
@@ -63,6 +73,4 @@ const changeTask = async (event) => {
 h3 {
   min-height: 64px;
 }
-
-
 </style>

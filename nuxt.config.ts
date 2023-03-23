@@ -10,7 +10,18 @@ export default defineNuxtConfig({
       apiSignIn: `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIRE_BASE_PUBLIC_API}`,
     }
   },
+  imports: {
+    dirs: [
+      'stores',
+      'stores/*/index.{ts,js}',
 
+      'composables',
+      'composables/*/index.{ts,js}',
+
+      'types',
+      'types/*/index.{ts,js}'
+    ],
+  },
  
 
   modules: ['@pinia/nuxt', async (_, nuxt) => {

@@ -35,14 +35,7 @@
         :class="{ warningBorderSelect: v$.category.$errors.length }"
         placeholder="Select a task category"
         class="w-75"
-        :items="[
-          'California',
-          'Colorado',
-          'Florida',
-          'Georgia',
-          'Texas',
-          'Wyoming',
-        ]"
+        :items="category"
         variant="solo"
       ></v-select>
 
@@ -164,7 +157,7 @@
           closable
           @click:close="removeSubTitle(subTask)"
         >
-          {{ subTask }}
+          {{ subTask.title }}
         </v-chip>
       </v-container>
       <v-container class="w-75 pl-0 mt-12">
@@ -189,10 +182,21 @@
   </v-container>
 </template>
 
-<script  setup>
+<script setup>
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { taskStore } from "@/stores/task";
+
+const category = [
+  "Management",
+  "Costumer Service",
+  "Marketing",
+  "Team",
+  "Design",
+  "IT",
+  "Media",
+  "Sales",
+];
 
 const initialState = {
   title: "",
@@ -231,7 +235,7 @@ const subInput = ref("");
 
 const addSubtitle = () => {
   if (subInput.value) {
-    state.subTasks.unshift(subInput.value);
+    state.subTasks.unshift({ title: subInput.value, done: false });
     clearSubInput();
   }
 };
@@ -283,7 +287,6 @@ const submitForm = async () => {
     padding: 8px;
     font-size: 0.9em;
   }
-
 }
 
 .urgency {
