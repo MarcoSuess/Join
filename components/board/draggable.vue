@@ -9,6 +9,7 @@
       class="list-group-item main-card"
       v-for="item in itemList"
       :key="item.id"
+      @click="openEditTaskDialog(item)"
     >
       <v-hover v-slot="{ isHovering, props }" open-delay="32">
         <v-card
@@ -18,13 +19,19 @@
         >
           <v-chip> IT </v-chip>
           <h5 class="mt-4">{{ item.title }}</h5>
+          <div
+            v-if="item.subTasks"
+            class="mt-4 w-100 justify-space-between d-flex"
+          >
+            <h6>Subtasks:</h6>
 
-          <h6 v-if="item.subTasks" class="mt-4">
-            {{
-              getSubTaskDoneLength(item.subTasks) + "/" + item.subTasks.length
-            }}
-            Done
-          </h6>
+            <h6>
+              {{
+                getSubTaskDoneLength(item.subTasks) + "/" + item.subTasks.length
+              }}
+              Done
+            </h6>
+          </div>
           <v-progress-linear
             v-if="item.subTasks"
             color="blue-lighten-1"
@@ -51,6 +58,62 @@
       </v-hover>
     </div>
   </draggable>
+
+  <v-dialog v-model="openDialog" width="512px">
+    <v-card class="pa-8">
+      <v-chip> IT </v-chip>
+      <h2 class="mt-2">
+        <strong class="opacity-font">Title: </strong> {{ dialogData.title }}
+      </h2>
+      <p class="mt-2">
+        <strong class="opacity-font">Description: </strong
+        >{{ dialogData.description }}
+      </p>
+      <div class="mt-6 w-100 justify-space-between d-flex">
+        <p><strong>Due Date: </strong></p>
+        <p>{{ dialogData.dueDate }}</p>
+      </div>
+
+      <div class="mt-6 w-100 justify-space-between d-flex">
+        <p><strong>Priority: </strong></p>
+        <img class="icon" :src="getPrioIMG(dialogData.prio)" />
+      </div>
+
+      <div class="mt-6 w-100 justify-space-between d-flex mb-2">
+        <p><strong>Subtasks: </strong></p>
+        <p>
+          {{
+            getSubTaskDoneLength(dialogData.subTasks) +
+            "/" +
+            dialogData.subTasks.length
+          }}
+          Done
+        </p>
+      </div>
+
+      <v-progress-linear
+        v-if="dialogData.subTasks"
+        color="blue-lighten-1"
+        :model-value="getSubTaskDoneInPercent(dialogData.subTasks)"
+      ></v-progress-linear>
+      <div class="subtaks">
+        <v-checkbox
+          v-for="subTask, index in dialogData.subTasks"
+          :key="index"
+          v-model="subTask.done"
+          :label="subTask.title"
+          @change="subTaskDoneUpdated($event, dialogData)"
+         
+        ></v-checkbox>
+      </div>
+
+      <p class="mt-10"><strong>Assigned To: </strong></p>
+      <div class="assigned-list">
+            
+
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -68,6 +131,18 @@ const emit = defineEmits(["changeItem"]);
 const changeItem = ($event, itemStatus) => {
   emit("changeItem", [$event, itemStatus]);
 };
+
+const openDialog = ref(false);
+const dialogData = ref([]);
+
+const openEditTaskDialog = (task) => {
+  openDialog.value = true;
+  dialogData.value = task;
+};
+
+const subTaskDoneUpdated = ($event, subtask) =>{
+            console.log(subtask);
+}
 
 const getPrioIMG = (prio) => {
   switch (prio) {
@@ -139,5 +214,20 @@ h5 {
 
 .main-card {
   width: 90%;
+}
+
+.opacity-font {
+  color: rgb(42 54 71 / 50%) !important;
+}
+
+.subtaks{
+
+    :deep(.v-input__control){
+        height: 40px;
+    }
+     
+    :deep(.v-input__details) {
+            display: none;
+    }
 }
 </style>
