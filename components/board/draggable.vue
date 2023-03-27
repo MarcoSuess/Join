@@ -45,11 +45,11 @@
                 size="small"
                 class="avatar"
                 :style="{ left: index * -8 + 'px' }"
-                v-for="(user, index) of item.assignedTo.slice(0, 4)"
+                v-for="(userID, index) of item.assignedTo.slice(0, 4)"
               >
                 <span>{{
-                  index < 3 ? "MS" : `+${item.assignedTo.length - 3}`
-                }}</span>
+                  index < 3 ? getUserFullNameAbbrByID(userID) : `+${item.assignedTo.length - 3}`
+                }}</span>   
               </v-avatar>
             </div>
             <img class="icon" :src="getPrioIMG(item.prio)" />
@@ -109,7 +109,7 @@
 
       <p class="mt-10"><strong>Assigned To: </strong></p>
       <div class="assigned-list">
-            
+
 
       </div>
     </v-card>
