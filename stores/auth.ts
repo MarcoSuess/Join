@@ -7,8 +7,8 @@ export const authStore = defineStore('auth', () => {
     const userData = ref<any>(null)
   
     async function auth() {
-      const userID = localStorage.getItem('user_id');
-      const userToken = localStorage.getItem('user_token');
+      const userID = useCookie('user_id').value;
+      const userToken = useCookie('user_token').value;
    
       if (!userID || !userToken) {
         return

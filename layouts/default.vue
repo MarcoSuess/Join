@@ -35,7 +35,7 @@
 
         <template v-slot:append>
           <div class="logout pb-16">
-            <v-btn class="btn-default" prepend-icon="mdi-logout" block
+            <v-btn @click="logOut" class="btn-default" prepend-icon="mdi-logout" block
               >Logout</v-btn
             >
           </div>
@@ -60,10 +60,24 @@
 <script setup>
 import { authStore } from "~~/stores/auth";
 import { taskStore } from "@/stores/task";
+import { useUserStore } from "@/stores/user";
 
-taskStore().getTasks();
+
+
+await useUserStore().getAllUsers();
+await taskStore().getTasks();
+
+console.log(useUserStore().allUsers);
 
 const userData = authStore().userData;
+
+
+const logOut = () => {
+useCookie('user_id').value = '';
+useCookie('user_token').value = '';
+return navigateTo('/');
+}
+
 </script>
 
 <style lang="scss" scoped>
