@@ -50,14 +50,9 @@
         clearable
         chips
         placeholder="Select contacts"
-        :items="[
-          'California',
-          'Colorado',
-          'Florida',
-          'Georgia',
-          'Texas',
-          'Wyoming',
-        ]"
+        :items="getUserWithTitle"
+        item-title="title"
+        item-value="id"
         multiple
         variant="solo"
       ></v-select>
@@ -186,6 +181,13 @@
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { taskStore } from "@/stores/task";
+import { useUserStore } from "@/stores/user";
+
+
+
+const getUserWithTitle = useUserStore().allUsers.map( (user) => { return {...user, title: `${user.firstName} ${user.lastName}`}} )
+
+
 
 const category = [
   "Management",
