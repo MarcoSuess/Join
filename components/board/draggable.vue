@@ -48,8 +48,10 @@
                 v-for="(userID, index) of item.assignedTo.slice(0, 4)"
               >
                 <span>{{
-                  index < 3 ? getUserFullNameAbbrByID(userID) : `+${item.assignedTo.length - 3}`
-                }}</span>   
+                  index < 3
+                    ? getUserFullNameAbbrByID(userID)
+                    : `+${item.assignedTo.length - 3}`
+                }}</span>
               </v-avatar>
             </div>
             <img class="icon" :src="getPrioIMG(item.prio)" />
@@ -79,7 +81,7 @@
         <img class="icon" :src="getPrioIMG(dialogData.prio)" />
       </div>
 
-      <div class="mt-6 w-100 justify-space-between d-flex mb-2">
+      <div v-if="dialogData.subTasks" class="mt-6 w-100 justify-space-between d-flex mb-2">
         <p><strong>Subtasks: </strong></p>
         <p>
           {{
@@ -98,20 +100,50 @@
       ></v-progress-linear>
       <div class="subtaks">
         <v-checkbox
-          v-for="subTask, index in dialogData.subTasks"
+          v-for="(subTask, index) in dialogData.subTasks"
           :key="index"
           v-model="subTask.done"
           :label="subTask.title"
           @change="subTaskDoneUpdated($event, dialogData)"
-         
         ></v-checkbox>
       </div>
 
       <p class="mt-10"><strong>Assigned To: </strong></p>
       <div class="assigned-list">
+        <div
+          v-for="assignedUser in dialogData.assignedTo"
+          class="d-flex mt-4 align-center overflow-y-auto"
+        >
+          <v-avatar color="orange" size="small" class="avatar">
+            <span>{{ getUserFullNameAbbrByID(assignedUser) }}</span>
+          </v-avatar>
 
-
+          <p class="ml-4">
+            {{ filterUserFromID(assignedUser).firstName }}
+            {{ filterUserFromID(assignedUser).lastName }}
+          </p>
+        </div>
       </div>
+
+      <v-card-actions class="w-100 d-flex justify-end mt-12">
+            
+        <v-btn
+          class="mr-4"
+          append-icon="mdi-trash-can-outline"
+          color="error"
+          variant="tonal"
+        >
+          delete
+        </v-btn>
+        <v-btn
+          class="btn-default"
+          append-icon="mdi-file-edit-outline"
+        >
+            Edit Task
+        </v-btn>
+   
+      </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>
@@ -140,9 +172,9 @@ const openEditTaskDialog = (task) => {
   dialogData.value = task;
 };
 
-const subTaskDoneUpdated = ($event, subtask) =>{
-            console.log(subtask);
-}
+const subTaskDoneUpdated = ($event, subtask) => {
+  console.log(subtask);
+};
 
 const getPrioIMG = (prio) => {
   switch (prio) {
@@ -220,14 +252,13 @@ h5 {
   color: rgb(42 54 71 / 50%) !important;
 }
 
-.subtaks{
+.subtaks {
+  :deep(.v-input__control) {
+    height: 40px;
+  }
 
-    :deep(.v-input__control){
-        height: 40px;
-    }
-     
-    :deep(.v-input__details) {
-            display: none;
-    }
+  :deep(.v-input__details) {
+    display: none;
+  }
 }
 </style>
