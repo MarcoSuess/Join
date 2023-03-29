@@ -9,7 +9,7 @@
       class="list-group-item main-card"
       v-for="item in itemList"
       :key="item.id"
-      @click="openEditTaskDialog(item)"
+      @click="showTaskDialog(item)"
     >
       <v-hover v-slot="{ isHovering, props }" open-delay="32">
         <v-card
@@ -61,98 +61,21 @@
     </div>
   </draggable>
 
-  <v-dialog v-model="openDialog" width="512px">
-    <v-card class="pa-8">
-      <v-chip> IT </v-chip>
-      <h2 class="mt-2">
-        <strong class="opacity-font">Title: </strong> {{ dialogData.title }}
-      </h2>
-      <p class="mt-2">
-        <strong class="opacity-font">Description: </strong
-        >{{ dialogData.description }}
-      </p>
-      <div class="mt-6 w-100 justify-space-between d-flex">
-        <p><strong>Due Date: </strong></p>
-        <p>{{ dialogData.dueDate }}</p>
-      </div>
+  <DialogShowTask
+    v-if="openShowTaskDialog"
+    :dialog-data="dialogData"
+    v-model="openShowTaskDialog"
+    @showEditTaskDialog="showEditTaskDialog($event)"
+  />
 
-      <div class="mt-6 w-100 justify-space-between d-flex">
-        <p><strong>Priority: </strong></p>
-        <img class="icon" :src="getPrioIMG(dialogData.prio)" />
-      </div>
-
-      <div v-if="dialogData.subTasks" class="mt-6 w-100 justify-space-between d-flex mb-2">
-        <p><strong>Subtasks: </strong></p>
-        <p>
-          {{
-            getSubTaskDoneLength(dialogData.subTasks) +
-            "/" +
-            dialogData.subTasks.length
-          }}
-          Done
-        </p>
-      </div>
-
-      <v-progress-linear
-        v-if="dialogData.subTasks"
-        color="blue-lighten-1"
-        :model-value="getSubTaskDoneInPercent(dialogData.subTasks)"
-      ></v-progress-linear>
-      <div class="subtaks">
-        <v-checkbox
-          v-for="(subTask, index) in dialogData.subTasks"
-          :key="index"
-          v-model="subTask.done"
-          :label="subTask.title"
-          @change="subTaskDoneUpdated($event, dialogData)"
-        ></v-checkbox>
-      </div>
-
-      <p class="mt-10"><strong>Assigned To: </strong></p>
-      <div class="assigned-list">
-        <div
-          v-for="assignedUser in dialogData.assignedTo"
-          class="d-flex mt-4 align-center overflow-y-auto"
-        >
-          <v-avatar color="orange" size="small" class="avatar">
-            <span>{{ getUserFullNameAbbrByID(assignedUser) }}</span>
-          </v-avatar>
-
-          <p class="ml-4">
-            {{ filterUserFromID(assignedUser).firstName }}
-            {{ filterUserFromID(assignedUser).lastName }}
-          </p>
-        </div>
-      </div>
-
-      <v-card-actions class="w-100 d-flex justify-end mt-12">
-            
-        <v-btn
-          class="mr-4"
-          append-icon="mdi-trash-can-outline"
-          color="error"
-          variant="tonal"
-        >
-          delete
-        </v-btn>
-        <v-btn
-          class="btn-default"
-          append-icon="mdi-file-edit-outline"
-        >
-            Edit Task
-        </v-btn>
-   
-      </v-card-actions>
-
-    </v-card>
-  </v-dialog>
+  <dialog-edit-task
+    v-if="openEditTaskDialog"
+    :open-dialog="openEditTaskDialog"
+    :dialog-data="editDialogData"
+  />
 </template>
 
 <script setup>
-import urgent from "@/assets/icons/Urgent.png";
-import medium from "@/assets/icons/Medium.png";
-import low from "@/assets/icons/Low.png";
-
 const props = defineProps({
   itemList: Array,
   itemStatus: Number,
@@ -164,27 +87,21 @@ const changeItem = ($event, itemStatus) => {
   emit("changeItem", [$event, itemStatus]);
 };
 
-const openDialog = ref(false);
-const dialogData = ref([]);
+const openShowTaskDialog = ref(false);
+const dialogData = ref({});
 
-const openEditTaskDialog = (task) => {
-  openDialog.value = true;
+const showTaskDialog = (task) => {
+  openShowTaskDialog.value = true;
   dialogData.value = task;
 };
 
-const subTaskDoneUpdated = ($event, subtask) => {
-  console.log(subtask);
-};
+const openEditTaskDialog = ref(false);
+const editDialogData = ref({});
 
-const getPrioIMG = (prio) => {
-  switch (prio) {
-    case "urgent":
-      return urgent;
-    case "medium":
-      return medium;
-    case "low":
-      return low;
-  }
+const showEditTaskDialog = (task) => {
+  console.log("edit dialog");
+  openEditTaskDialog.value = true;
+  editDialogData.value = task;
 };
 
 console.log(props.itemList);
@@ -250,15 +167,5 @@ h5 {
 
 .opacity-font {
   color: rgb(42 54 71 / 50%) !important;
-}
-
-.subtaks {
-  :deep(.v-input__control) {
-    height: 40px;
-  }
-
-  :deep(.v-input__details) {
-    display: none;
-  }
 }
 </style>

@@ -155,13 +155,14 @@
       <v-container class="w-75 pl-0 mt-12 d-flex justify-end">
         <v-btn
           class="mr-8"
-          append-icon="mdi-close"
+          :append-icon="props.status == 'create' ? 'mdi-close' : 'mdi-backup-restore'"
           color="error"
           variant="plain"
           @click="clearForm"
         >
-          Clear
+        {{ props.status == "create" ? "Clear" : "Reset" }}
         </v-btn>
+        
         <v-btn
           @click="submitForm()"
           class="btn-default"
@@ -200,6 +201,8 @@ const category = [
   "Sales",
 ];
 
+
+
 const initialState = {
   title: props.taskData?.title || "",
   description: props.taskData?.description || "",
@@ -207,7 +210,7 @@ const initialState = {
   assignedTo: props.taskData?.assignedTo || [],
   dueDate: props.taskData?.dueDate || null,
   prio: props.taskData?.prio || "urgent",
-  subTasks: props.taskData?.subTasks || [],
+  subTasks: props.taskData?.subTasks ?  JSON.parse(JSON.stringify(props.taskData?.subTasks)) : [],
 };
 
 const state = reactive({
@@ -229,7 +232,8 @@ const clearForm = () => {
     state[key] = value;
   }
 
-  state.subTasks = [];
+
+  state.subTasks = JSON.parse(JSON.stringify(props.taskData?.subTasks)) || [];
 };
 
 const subInput = ref("");
@@ -255,7 +259,16 @@ const submitForm = async () => {
 
   if (!isFormCorrect) return;
 
-  taskStore().createTask(state);
+  if(props.status == 'create') {
+    await taskStore().createTask(state);
+    console.log('create task', state);
+  } else {
+    console.log('patch task', state);
+    await taskStore().patchTask({...state, id: props.taskData.id});
+  }
+
+
+
 };
 </script>
 
