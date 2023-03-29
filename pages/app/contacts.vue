@@ -1,35 +1,44 @@
 <template>
   <v-container class="main-contact d-flex h-100 w-100">
-    <div class="contact-list h-100 overflow-y-auto pa-6">
-      <div class="contact-item d-flex">
-        <span> <strong>A</strong> </span>
-        <v-divider class="border-opacity-25 mt-4"></v-divider>
-        <v-item-group>
-          <v-hover v-slot="{ isHovering, props }" close-delay="20">
-            <v-item v-slot="{ isSelected, toggle }">
-              <div
-                class="contact d-flex align-center mt-4 w-100 pa-2"
-                :elevation="isHovering ? 4 : 2"
-                :class="{ 'on-hover': isHovering, selected: isSelected }"
-                v-bind="props"
-                @click="toggle"
-              >
-                <v-avatar color="red" size="40" class="avatar mr-4">
-                  <!--  <span>{{ getUserFullNameAbbrByID(userID) }}</span> -->
-                  <span>MS</span>
-                </v-avatar>
-                <div
-                  :class="{ 'contact-name-email-active': isSelected }"
-                  class="contact-name-email"
-                >
-                  <p>Marco Suess</p>
-                  <p class="mail">marcosuess@web.de</p>
-                </div>
-              </div>
-            </v-item>
-          </v-hover>
-        </v-item-group>
-      </div>
+    <div class="contact-list  overflow-y-auto pa-6">
+      <v-item-group>
+        <div
+          v-for="contact of useUserStore().allUsers"
+          class="contact-item d-flex"
+        >
+          <div class="mt-12" v-for="letter of letters" >
+            <div v-if="contact.firstName.charAt(0).toLowerCase() === letter">
+              <span> <strong>{{ letter.toUpperCase() }}</strong> </span>
+              <v-divider class="border-opacity-25 mt-4"></v-divider>
+
+              <v-hover v-slot="{ isHovering, props }" close-delay="20">
+                <v-item v-slot="{ isSelected, select }">
+                  <div
+                    class="contact d-flex align-center mt-4 w-100 pa-2"
+                    :elevation="isHovering ? 4 : 2"
+                    :class="{ 'on-hover': isHovering, selected: isSelected }"
+                    v-bind="props"
+                    @click="select"
+                  >
+                    <v-avatar color="red" size="40" class="avatar mr-4">
+                      <span>{{
+                        getUserFullNameAbbr(contact.firstName, contact.lastName)
+                      }}</span>
+                    </v-avatar>
+                    <div
+                      :class="{ 'contact-name-email-active': isSelected }"
+                      class="contact-name-email"
+                    >
+                      <p>{{ contact.firstName }} {{ contact.lastName }}</p>
+                      <p class="mail">{{ contact.email }}</p>
+                    </div>
+                  </div>
+                </v-item>
+              </v-hover>
+            </div>
+          </div>
+        </div>
+      </v-item-group>
     </div>
 
     <div class="contact-info h-100 w-100 pa-14">
@@ -41,7 +50,13 @@
   </v-container>
 </template>
 
-<script setup></script>
+<script setup>
+import { useUserStore } from "@/stores/user";
+
+const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97));
+
+
+</script>
 
 <style lang="scss" scoped>
 .contact-list {
@@ -66,6 +81,11 @@
   }
 }
 
+
+.contact-list {
+    max-height: calc(100vh - 64px) !important;
+    height: auto;
+}
 .contact-item {
   flex-direction: column;
 }
