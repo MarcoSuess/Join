@@ -49,7 +49,7 @@
       </v-app-bar>
 
       <v-main style="min-height: 100vh">
-        <v-container >
+        <v-container :class="{ 'contacts-container' : checkRouteContacts() }" >
           <slot></slot>
         </v-container>
       </v-main>
@@ -61,6 +61,12 @@
 import { authStore } from "~~/stores/auth";
 import { taskStore } from "@/stores/task";
 import { useUserStore } from "@/stores/user";
+
+
+const checkRouteContacts = () => {
+  const route = useRoute();
+  return route.path.includes('contacts')
+}
 
 
 
@@ -130,5 +136,14 @@ return navigateTo('/');
     font-size: 48px;
     margin-right: 32px !important;
   }
+}
+
+
+
+.contacts-container {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 </style>

@@ -72,6 +72,8 @@
     v-if="openEditTaskDialog"
     :open-dialog="openEditTaskDialog"
     :dialog-data="editDialogData"
+    @close="openEditTaskDialog = false"
+    @save="closeEditTaskDialogSave($event)"
   />
 </template>
 
@@ -103,6 +105,12 @@ const showEditTaskDialog = (task) => {
   openEditTaskDialog.value = true;
   editDialogData.value = task;
 };
+
+const closeEditTaskDialogSave = (task) => {
+    console.log(task);
+    openEditTaskDialog.value = false;
+    dialogData.value = task;
+}
 
 console.log(props.itemList);
 </script>

@@ -40,7 +40,7 @@
         color="blue-lighten-1"
         :model-value="getSubTaskDoneInPercent(props.dialogData.subTasks)"
       ></v-progress-linear>
-      <div class="subtaks">
+      <div class="subtasks">
         <v-checkbox
           v-for="(subTask, index) in props.dialogData.subTasks"
           :key="index"
@@ -86,38 +86,40 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-
-  
-
 </template>
 
 <script scoped setup>
+import { taskStore } from "@/stores/task";
 const props = defineProps({
   dialogData: Object,
 });
 
-const emit = defineEmits(['showEditTaskDialog'])
+const emit = defineEmits(["showEditTaskDialog"]);
+
 
 
 const showEditTaskDialog = (taskData) => {
-    emit('showEditTaskDialog', taskData)
+  emit("showEditTaskDialog", taskData);
 };
 
 const subTaskDoneUpdated = ($event, subtask) => {
   console.log(subtask);
+  taskStore().patchTask(subtask);
 };
 </script>
 
-<style lang="scss">
-.subtaks {
+<style scoped lang="scss">
+.subtasks {
+
   :deep(.v-input__control) {
-    height: 40px;
+    height: 40px !important;
   }
 
   :deep(.v-input__details) {
-    display: none;
+    display: none !important;
   }
 }
+
 
 .v-card-modal {
   padding: 16px;
