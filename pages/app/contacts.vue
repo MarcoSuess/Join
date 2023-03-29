@@ -6,8 +6,8 @@
           v-for="contact of useUserStore().allUsers"
           class="contact-item d-flex"
         >
-          <div class="mt-12" v-for="letter of letters" >
-            <div v-if="contact.firstName.charAt(0).toLowerCase() === letter">
+          <template v-for="letter of letters" >
+            <div class="mt-12" v-if="contact.firstName.charAt(0).toLowerCase() === letter">
               <span> <strong>{{ letter.toUpperCase() }}</strong> </span>
               <v-divider class="border-opacity-25 mt-4"></v-divider>
 
@@ -36,7 +36,7 @@
                 </v-item>
               </v-hover>
             </div>
-          </div>
+          </template>
         </div>
       </v-item-group>
     </div>
