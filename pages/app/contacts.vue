@@ -1,14 +1,19 @@
 <template>
   <v-container class="main-contact d-flex h-100 w-100">
-    <div class="contact-list  overflow-y-auto pa-6">
+    <div class="contact-list overflow-y-auto pa-6">
       <v-item-group>
         <div
           v-for="contact of useUserStore().allUsers"
           class="contact-item d-flex"
         >
-          <template v-for="letter of letters" >
-            <div class="mt-12" v-if="contact.firstName.charAt(0).toLowerCase() === letter">
-              <span> <strong>{{ letter.toUpperCase() }}</strong> </span>
+          <template v-for="letter of letters">
+            <div
+              class="mt-12"
+              v-if="contact.firstName.charAt(0).toLowerCase() === letter"
+            >
+              <span>
+                <strong>{{ letter.toUpperCase() }}</strong>
+              </span>
               <v-divider class="border-opacity-25 mt-4"></v-divider>
 
               <v-hover v-slot="{ isHovering, props }" close-delay="20">
@@ -45,7 +50,29 @@
       <div class="title d-flex align-center">
         <h1 class="mr-4">Contacts</h1>
         <p><strong> Better with a Team</strong></p>
+        <v-btn append-icon="mdi-file-edit-outline" class="ml-auto btn-default">
+          Edit Contact
+        </v-btn>
       </div>
+      <template v-if="true">
+        <div class="contact-profile d-flex mt-12 align-center">
+          <v-avatar color="red" size="64" class="avatar mr-4">
+            <span class="text-h5">{{ "MS" }}</span>
+          </v-avatar>
+
+          <p class="text-h6 ml-2">Marco Suess</p>
+        </div>
+
+        <h3 class="mt-12">Contact-Information</h3>
+        <div class="d-flex mt-4">
+          <strong style="width: 64px" class="mr-2">Email:</strong>
+          <p class="mail">marcosuess@web.de</p>
+        </div>
+        <div class="d-flex mt-4">
+          <strong style="width: 64px" class="mr-2">Phone:</strong>
+          <p>+032432412132</p>
+        </div>
+      </template>
     </div>
   </v-container>
 </template>
@@ -54,8 +81,6 @@
 import { useUserStore } from "@/stores/user";
 
 const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97));
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -81,10 +106,9 @@ const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97));
   }
 }
 
-
 .contact-list {
-    max-height: calc(100vh - 64px) !important;
-    height: auto;
+  max-height: calc(100vh - 64px) !important;
+  height: auto;
 }
 .contact-item {
   flex-direction: column;
