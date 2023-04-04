@@ -3,7 +3,7 @@
     <div class="contact-list overflow-y-auto pa-6">
       <v-item-group>
         <div
-          v-for="contact of useUserStore().allUsers"
+          v-for="contact of sortContactNames()"
           class="contact-item d-flex"
         >
           <template v-for="letter of letters">
@@ -106,6 +106,21 @@ import { useUserStore } from "@/stores/user";
 
 const selectedUserData = ref();
 const openEditModal = ref(false);
+
+const sortContactNames = () => {
+  return useUserStore().allUsers.sort((a, b) => {
+    if (a.firstName < b.firstName) {
+      return -1;
+    }
+    if (a.firstName > b.firstName) {
+      return 1;
+    }
+    return 0;
+  });
+};
+
+
+
 
 const selectUser = (user) => {
   selectedUserData.value = user;
