@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
 
     async function patchUser(user: User) {
         try {
-            const patchUser = await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}.json?auth=${user.token}`, {
+            const patchUser = await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}/${user.uid}.json?auth=${user.token}`, {
                 method: 'PATCH',
                 body: JSON.stringify(user)
             })

@@ -20,25 +20,26 @@ export const useRegisterStore = defineStore('register', () => {
                 })
             })
             console.log(getRegisterResponse);
-            const user = { ...userData, id: getRegisterResponse._data.localId, token: getRegisterResponse._data.idToken }
-            await createUserToDatabase(user);
+            const user = { ...userData, id: getRegisterResponse._data.localId};
+            const token = getRegisterResponse._data.idToken;
+            await createUserToDatabase(user, token);
 
         } catch (error) {
             console.error('[register store]', error)
         }
 
-    } ``
+    } 
 
-    async function createUserToDatabase(user: User) {
+    async function createUserToDatabase(user: User, token: string) {
         try {
-            const createUser = await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}.json?auth=${user.token}`, {
+            const createUser: any = await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}.json?auth=${token}`, {
                 method: 'POST',
                 body: JSON.stringify(user)
             })
-
+            await useUserStore().patchUser({...user, uid: createUser._data.name})
             console.log(createUser);
             useCookie('user_id').value = user.id as string;
-            useCookie('user_token').value = user.token as string;
+            useCookie('user_token').value = token;
 
         } catch (error) {
             console.error('[register store Database Create]', error)
