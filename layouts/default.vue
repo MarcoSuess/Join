@@ -35,7 +35,11 @@
 
         <template v-slot:append>
           <div class="logout pb-16">
-            <v-btn @click="logOut" class="btn-default" prepend-icon="mdi-logout" block
+            <v-btn
+              @click="logOut"
+              class="btn-default"
+              prepend-icon="mdi-logout"
+              block
               >Logout</v-btn
             >
           </div>
@@ -49,7 +53,7 @@
       </v-app-bar>
 
       <v-main style="min-height: 100vh">
-        <v-container :class="{ 'contacts-container' : checkRouteContacts() }" >
+        <v-container :class="{ 'contacts-container': checkRouteContacts() }">
           <slot></slot>
         </v-container>
       </v-main>
@@ -62,13 +66,12 @@ import { authStore } from "~~/stores/auth";
 import { taskStore } from "@/stores/task";
 import { useUserStore } from "@/stores/user";
 
+const router = useRouter();
 
 const checkRouteContacts = () => {
   const route = useRoute();
-  return route.path.includes('contacts')
-}
-
-
+  return route.path.includes("contacts");
+};
 
 await useUserStore().getAllUsers();
 await taskStore().getTasks();
@@ -77,13 +80,12 @@ console.log(useUserStore().allUsers);
 
 const userData = authStore().userData;
 
-
 const logOut = () => {
-useCookie('user_id').value = '';
-useCookie('user_token').value = '';
-return navigateTo('/');
-}
-
+  useCookie("user_id").value = "";
+  useCookie("user_token").value = "";
+  console.log('test');
+  return navigateTo({path: '/'})
+};
 </script>
 
 <style lang="scss" scoped>
@@ -138,12 +140,14 @@ return navigateTo('/');
   }
 }
 
-
-
 .contacts-container {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
+}
+
+.v-main {
+  background-color: rgb(246, 247, 248);
 }
 </style>

@@ -66,6 +66,7 @@
       class="mr-4"
       size="large"
       variant="tonal"
+      @click="loginUser"
     >
       Login
     </v-btn>
@@ -93,6 +94,8 @@
 <script setup lang="ts">
 import { useRegisterStore } from "@/stores/register";
 import { authStore } from "@/stores/auth";
+
+const router = useRouter();
 
 defineProps({
   isRegisterForm: {
@@ -135,6 +138,7 @@ const registerUser = async () => {
   );
 
   await authStore().auth();
+  return navigateTo({path: "/app/dashboard"})
 };
 
 const checkLoginValues = computed(() => {
@@ -148,9 +152,12 @@ const checkLoginValues = computed(() => {
   return false;
 });
 
-const loginUser = () => {
-  console.log("login");
+const loginUser = async () => {
+  await useLoginStore().login(email.value, password.value);
+  return navigateTo({path: "/app/dashboard"})
 };
+
+
 </script>
 
 <style lang="scss" scoped>

@@ -2,10 +2,7 @@
   <v-container class="main-contact d-flex h-100 w-100">
     <div class="contact-list overflow-y-auto pa-6">
       <v-item-group>
-        <div
-          v-for="contact of sortContactNames()"
-          class="contact-item d-flex"
-        >
+        <div v-for="contact of sortContactNames()" class="contact-item d-flex">
           <template v-for="letter of letters">
             <div
               class="mt-12"
@@ -119,9 +116,6 @@ const sortContactNames = () => {
   });
 };
 
-
-
-
 const selectUser = (user) => {
   selectedUserData.value = user;
   console.log(user);
@@ -137,7 +131,7 @@ const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97));
 
 <style lang="scss" scoped>
 .contact-list {
-  background-color: rgb(245 245 245);
+  background-color: white;
   min-width: 25%;
 }
 
@@ -146,17 +140,7 @@ const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97));
   padding: 0;
 }
 
-.title {
-  h1 {
-    border-right: 3px solid $secondary;
-    padding-right: 32px;
-  }
 
-  p {
-    font-size: 1.3rem;
-    color: $dark-navy;
-  }
-}
 
 .contact-list {
   max-height: calc(100vh - 64px) !important;
@@ -189,6 +173,18 @@ const letters = [...Array(26)].map((_, i) => String.fromCharCode(i + 97));
 
   .mail {
     color: #0ff;
+  }
+}
+
+.title {
+  h1 {
+    border-right: 3px solid $secondary;
+    padding-right: 32px;
+  }
+
+  p {
+    font-size: 1.3rem;
+    color: $dark-navy;
   }
 }
 </style>

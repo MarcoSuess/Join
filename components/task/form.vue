@@ -155,14 +155,16 @@
       <v-container class="w-75 pl-0 mt-12 d-flex justify-end">
         <v-btn
           class="mr-8"
-          :append-icon="props.status == 'create' ? 'mdi-close' : 'mdi-backup-restore'"
+          :append-icon="
+            props.status == 'create' ? 'mdi-close' : 'mdi-backup-restore'
+          "
           color="error"
           variant="plain"
           @click="clearForm"
         >
-        {{ props.status == "create" ? "Clear" : "Reset" }}
+          {{ props.status == "create" ? "Clear" : "Reset" }}
         </v-btn>
-        
+
         <v-btn
           @click="submitForm()"
           class="btn-default"
@@ -186,8 +188,7 @@ const props = defineProps({
   taskData: {},
 });
 
-
-const emit = defineEmits(['saveEditTask'])
+const emit = defineEmits(["saveEditTask"]);
 
 const getUserWithTitle = useUserStore().allUsers.map((user) => {
   return { ...user, title: `${user.firstName} ${user.lastName}` };
@@ -204,8 +205,6 @@ const category = [
   "Sales",
 ];
 
-
-
 const initialState = {
   title: props.taskData?.title || "",
   description: props.taskData?.description || "",
@@ -213,7 +212,9 @@ const initialState = {
   assignedTo: props.taskData?.assignedTo || [],
   dueDate: props.taskData?.dueDate || null,
   prio: props.taskData?.prio || "urgent",
-  subTasks: props.taskData?.subTasks ?  JSON.parse(JSON.stringify(props.taskData?.subTasks)) : [],
+  subTasks: props.taskData?.subTasks
+    ? JSON.parse(JSON.stringify(props.taskData?.subTasks))
+    : [],
 };
 
 const state = reactive({
@@ -230,13 +231,17 @@ const rules = {
 const v$ = useVuelidate(rules, state);
 
 const clearForm = () => {
+  console.log(initialState);
   v$.value.$reset();
   for (const [key, value] of Object.entries(initialState)) {
     state[key] = value;
   }
 
-
-  state.subTasks = JSON.parse(JSON.stringify(props.taskData?.subTasks)) || [];
+  if (props.status === "edit") {
+    state.subTasks = JSON.parse(JSON.stringify(props.taskData?.subTasks)) || [];
+  } else {
+    state.subTasks = [];
+  }
 };
 
 const subInput = ref("");
@@ -262,18 +267,14 @@ const submitForm = async () => {
 
   if (!isFormCorrect) return;
 
-  if(props.status == 'create') {
+  if (props.status == "create") {
     await taskStore().createTask(state);
-    console.log('create task', state);
+    console.log("create task", state);
   } else {
-    console.log('patch task', state);
-    await taskStore().patchTask({...state, id: props.taskData.id});
-    emit('saveEditTask', {...state, id: props.taskData.id});
+    console.log("patch task", state);
+    await taskStore().patchTask({ ...state, id: props.taskData.id });
+    emit("saveEditTask", { ...state, id: props.taskData.id });
   }
-
-
-
-
 };
 </script>
 

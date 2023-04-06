@@ -25,12 +25,15 @@ export const authStore = defineStore('auth', () => {
        userData.value = await getUser._data[getUserKey];
        isLoggedIn.value = true;
        console.log(userData.value);
+       
   
       } catch (error) {
         console.error('[auth store]', error)
+   
       }
       loading.value = false
       initialized.value = true
+      
     }
   
     return {
