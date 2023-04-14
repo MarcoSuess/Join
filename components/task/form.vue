@@ -188,7 +188,7 @@ const props = defineProps({
   taskData: {},
 });
 
-const emit = defineEmits(["saveEditTask"]);
+const emit = defineEmits(["saveEditTask", "snackbar"]);
 
 const getUserWithTitle = useUserStore().allUsers.map((user) => {
   return { ...user, title: `${user.firstName} ${user.lastName}` };
@@ -270,11 +270,15 @@ const submitForm = async () => {
   if (props.status == "create") {
     await taskStore().createTask(state);
     console.log("create task", state);
+     clearForm();
+     emit('snackbar');
   } else {
     console.log("patch task", state);
     await taskStore().patchTask({ ...state, id: props.taskData.id });
     emit("saveEditTask", { ...state, id: props.taskData.id });
   }
+
+  
 };
 </script>
 
