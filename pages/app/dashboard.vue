@@ -28,9 +28,9 @@
               :elevation="isHovering ? 16 : 2"
               :class="{ 'on-hover': isHovering }"
               v-bind="props"
-              to="/app/board"
+              @click="navigateToBoard('inProgress')"
             >
-              <strong class="text-h3">{{ filterTaskStatus(1).length }}</strong>
+              <strong class="text-h3">{{ filterTaskStatus('inProgress').length }}</strong>
               <p class="text-h5">Tasks in Progress</p>
             </v-card>
           </v-hover>
@@ -42,9 +42,9 @@
               :elevation="isHovering ? 16 : 2"
               :class="{ 'on-hover': isHovering }"
               v-bind="props"
-              to="/app/board"
+              @click="navigateToBoard('awaitingFeedback')"
             >
-              <strong class="text-h3">{{ filterTaskStatus(2).length }}</strong>
+              <strong class="text-h3">{{ filterTaskStatus('awaitingFeedback').length }}</strong>
               <p class="text-h5">Awaiting Feedback</p>
             </v-card>
           </v-hover>
@@ -59,7 +59,7 @@
               :elevation="isHovering ? 16 : 2"
               :class="{ 'on-hover': isHovering }"
               v-bind="props"
-              to="/app/board"
+              @click="navigateToBoard('urgent')"
             >
               <div class="left d-flex w-50 align-center">
                 <img
@@ -82,7 +82,7 @@
               <div
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
-                <p class="text-h6">{{ filterNearestDate[0].dueDate }}</p>
+                <p class="text-h6">{{ filterNearestDate[0]?.dueDate }}</p>
                 <strong class="text-h5">Upcoming Deadline</strong>
               </div>
             </v-card>
@@ -98,7 +98,7 @@
               :elevation="isHovering ? 16 : 2"
               :class="{ 'on-hover': isHovering }"
               v-bind="props"
-              to="/app/board"
+              @click="navigateToBoard('todo')"
             >
               <v-icon
                 icon="mdi-file-edit-outline"
@@ -108,7 +108,7 @@
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
                 <strong class="text-h3">{{
-                  filterTaskStatus(0).length
+                  filterTaskStatus('todo').length
                 }}</strong>
                 <p class="text-h5">To-do</p>
               </div>
@@ -123,7 +123,7 @@
               :elevation="isHovering ? 16 : 2"
               :class="{ 'on-hover': isHovering }"
               v-bind="props"
-              to="/app/board"
+              @click="navigateToBoard('done')"
             >
               <v-icon
                 icon="mdi-check"
@@ -133,7 +133,7 @@
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
                 <strong class="text-h3">{{
-                  filterTaskStatus(3).length
+                  filterTaskStatus('done').length
                 }}</strong>
                 <p class="text-h5">Done</p>
               </div>
@@ -148,7 +148,7 @@
 <script setup>
 import { taskStore } from "@/stores/task";
 
-const tasks = taskStore().tasks;
+const tasks = taskStore().tasks || [];
 console.log(tasks);
 
 const filterTaskStatus = (status) => {
@@ -165,6 +165,17 @@ const filterNearestDate = tasks.sort((a, b) => {
   const distanceB = Math.abs(currentDate - new Date(b.dueDate));
   return distanceA - distanceB;
 });
+
+
+const navigateToBoard = (filterValue) => {
+  const router = useRouter();
+
+  router.push({
+      path: "board",
+      query: { filter: filterValue },
+    });
+}
+
 </script>
 
 <style lang="scss" scoped>

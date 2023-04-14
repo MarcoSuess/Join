@@ -7,16 +7,9 @@ export interface Task {
     dueDate: Date,
     prio: string,
     subTasks?: string[]
-    status: TaskStatus
+    status: string
 }
 
 
 
 
-export enum TaskStatus {
-    Todo,
-    InProgress,
-    AwaitingFeedback,
-    Done
-    
-}

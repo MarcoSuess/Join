@@ -10,7 +10,7 @@ export const taskStore = defineStore('task', () => {
 
     async function createTask(task: Task) {
 
-        const newTask = { ...task, status: TaskStatus.Todo }
+        const newTask = { ...task, status: 'todo' }
 
        
         

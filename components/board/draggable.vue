@@ -17,7 +17,7 @@
           :elevation="isHovering ? 16 : 2"
           :class="{ 'on-hover': isHovering }"
         >
-          <v-chip> IT </v-chip>
+          <v-chip> {{ item.category }} </v-chip>
           <h5 class="mt-4">{{ item.title }}</h5>
           <div
             v-if="item.subTasks"
@@ -80,7 +80,7 @@
 <script setup>
 const props = defineProps({
   itemList: Array,
-  itemStatus: Number,
+  itemStatus: String,
 });
 
 const emit = defineEmits(["changeItem"]);
@@ -107,10 +107,10 @@ const showEditTaskDialog = (task) => {
 };
 
 const closeEditTaskDialogSave = (task) => {
-    console.log(task);
-    openEditTaskDialog.value = false;
-    dialogData.value = task;
-}
+  console.log(task);
+  openEditTaskDialog.value = false;
+  dialogData.value = task;
+};
 
 console.log(props.itemList);
 </script>
