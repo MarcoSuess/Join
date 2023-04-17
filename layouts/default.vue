@@ -83,7 +83,6 @@ const userData = authStore().userData;
 const logOut = () => {
   useCookie("user_id").value = "";
   useCookie("user_token").value = "";
-  console.log('test');
   return navigateTo({path: '/'})
 };
 </script>

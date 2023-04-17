@@ -1,7 +1,7 @@
 <template>
   <v-dialog width="512px">
     <v-card class="pa-8 v-card-modal">
-      <v-chip> IT </v-chip>
+      <v-chip> {{ props.dialogData.category }} </v-chip>
       <h2 class="mt-2">
         <strong class="opacity-font">Title: </strong>
         {{ props.dialogData.title }}
