@@ -26,6 +26,7 @@
     :all-tasks="taskStore().tasks"
     :all-users="useUserStore().allUsers"
     :filter-options="filterOptions"
+    :filter-tasks="filterArray"
   ></DialogFilterSettings>
 
   <v-container

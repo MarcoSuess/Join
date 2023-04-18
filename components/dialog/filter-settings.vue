@@ -19,7 +19,6 @@
           item-value="id"
           multiple
           variant="solo"
-          @update:model-value="filterContacts(filterOptions.contacts)"
         ></v-select>
 
         <p><strong> Filter Category</strong></p>
@@ -100,6 +99,7 @@ const props = defineProps({
   allTasks: Array,
   allUsers: Array,
   filterOptions: Object,
+  filterTasks: Array,
 });
 
 const emit = defineEmits(["close", "save"]);
@@ -126,25 +126,65 @@ onMounted(() => {
 });
 
 const saveFilterOptions = () => {
+  filterContacts(props.filterOptions.contacts);
+  filterCategory(props.filterOptions.category);
+  filterPrio(props.filterOptions.prio);
+  filterDueDateRange(
+    props.filterOptions.dueDateFrom,
+    props.filterOptions.dueDateTo
+  );
   emit("save", [props.filterOptions, optionFilterTasks.value]);
 };
 
 const filterContacts = (contacts) => {
-  const newContacts = optionFilterTasks.value.filter((task) => {
+  if (!contacts || contacts.length <= 0) return;
+  optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
     return contacts.some((contact) => {
       return task.assignedTo.indexOf(contact) !== -1;
     });
   });
-
-  optionFilterTasks.value =
-    newContacts.length <= 0 ? props.allTasks : newContacts;
-
-  console.log(optionFilterTasks.value);
 };
 
+const filterCategory = (category) => {
+  if (!category || category.length <= 0) return;
+  optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
+    return category.some((categ) => {
+      return task.category.indexOf(categ) !== -1;
+    });
+  });
+};
 
+const filterPrio = (prio) => {
+  if (!prio) return;
+  optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
+    return task.prio == prio.toLowerCase();
+  });
+};
 
+const filterDueDateRange = (startDate, endDate) => {
+  if (!startDate && !endDate) return;
 
+  if (startDate && endDate) {
+    optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
+      return (
+        new Date(task.dueDate) < new Date(endDate) &&
+        new Date(task.dueDate) > new Date(startDate)
+      );
+    });
+  }
+
+  if (startDate && !endDate) {
+    optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
+      return new Date(task.dueDate) > new Date(startDate);
+    });
+  }
+
+  if (!startDate && endDate) {
+    optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
+      return new Date(task.dueDate) < new Date(endDate);
+    });
+  }
+};
 
 console.log(props);
 </script>
