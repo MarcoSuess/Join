@@ -12,7 +12,7 @@
       </p>
       <div class="mt-6 w-100 justify-space-between d-flex">
         <p><strong>Due Date: </strong></p>
-        <p>{{ props.dialogData.dueDate }}</p>
+        <p>{{formatDate(props.dialogData.dueDate)  }}</p>
       </div>
 
       <div class="mt-6 w-100 justify-space-between d-flex">
@@ -73,6 +73,7 @@
           append-icon="mdi-trash-can-outline"
           color="error"
           variant="tonal"
+          @click="deleteTask(props.dialogData)"
         >
           delete
         </v-btn>
@@ -94,9 +95,13 @@ const props = defineProps({
   dialogData: Object,
 });
 
-const emit = defineEmits(["showEditTaskDialog"]);
+const emit = defineEmits(["showEditTaskDialog", 'deleteTask']);
 
 
+
+const deleteTask = (taskData) => {
+    emit('deleteTask', taskData)
+}
 
 const showEditTaskDialog = (taskData) => {
   emit("showEditTaskDialog", taskData);

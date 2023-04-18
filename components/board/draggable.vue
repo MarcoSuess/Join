@@ -66,6 +66,7 @@
     :dialog-data="dialogData"
     v-model="openShowTaskDialog"
     @showEditTaskDialog="showEditTaskDialog($event)"
+    @deleteTask="deleteTask($event)"
   />
 
   <dialog-edit-task
@@ -111,6 +112,13 @@ const closeEditTaskDialogSave = (task) => {
   openEditTaskDialog.value = false;
   dialogData.value = task;
 };
+
+
+const deleteTask = async(task) => {
+    await taskStore().deleteTask(task)
+    openShowTaskDialog.value = false;
+    
+}
 
 console.log(props.itemList);
 </script>

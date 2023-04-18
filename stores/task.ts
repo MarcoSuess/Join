@@ -9,12 +9,7 @@ export const taskStore = defineStore('task', () => {
 
 
     async function createTask(task: Task) {
-
         const newTask = { ...task, status: 'todo' }
-
-       
-        
-
         try {
             await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/tasks.json`, {
                 method: 'POST',
@@ -57,11 +52,26 @@ export const taskStore = defineStore('task', () => {
 
     }
 
+    async function deleteTask(task: Task) {
+        try {
+            await $fetch.raw(`https://join-a9f9a-default-rtdb.europe-west1.firebasedatabase.app/tasks/${task.id}.json`, {
+                method: 'DELETE',
+                body: JSON.stringify(task)
+            }).then(async (res) => {
+                await getTasks();
+            })
+        } catch (error) {
+            console.log('[task store, DELETE]', error);
+
+        }
+    }
+
 
     return {
         createTask,
         getTasks,
         patchTask,
+        deleteTask,
         tasks
     }
 

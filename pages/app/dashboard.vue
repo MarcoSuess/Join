@@ -82,7 +82,7 @@
               <div
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
-                <p class="text-h6">{{ filterNearestDate[0]?.dueDate }}</p>
+                <p class="text-h6">{{ formatDate(filterNearestDate[0]?.dueDate ) }}</p>
                 <strong class="text-h5">Upcoming Deadline</strong>
               </div>
             </v-card>

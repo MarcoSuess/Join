@@ -47,9 +47,23 @@
       </v-navigation-drawer>
 
       <v-app-bar title="Kanban Project Managemet Tool">
-        <div class="user-profile">
-          <v-icon icon="mdi-account-circle"></v-icon>
-        </div>
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <div class="user-profile">
+              <v-icon v-bind="props" icon="mdi-account-circle"></v-icon>
+            </div>
+          </template>
+
+          <v-list class="pa-4">
+            <v-btn
+                    @click="logOut"
+                    class="btn-default"
+                    prepend-icon="mdi-logout"
+                    block
+                    >Logout</v-btn
+                  >
+          </v-list>
+        </v-menu>
       </v-app-bar>
 
       <v-main style="min-height: 100vh">
@@ -83,7 +97,7 @@ const userData = authStore().userData;
 const logOut = () => {
   useCookie("user_id").value = "";
   useCookie("user_token").value = "";
-  return navigateTo({path: '/'})
+  return navigateTo({ path: "/" });
 };
 </script>
 
