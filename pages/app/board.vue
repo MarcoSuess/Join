@@ -18,6 +18,89 @@
     </v-text-field>
   </header>
 
+  <div class="filter-info">
+    <strong
+      >Tasks: {{ allTasks.length }} From {{ taskStore().tasks.length }}</strong
+    >
+    <div class="selected-filter d-flex mt-4 mb-4" v-if="getQuery">
+      <v-chip
+        class="mr-4 pa-5 main-chip"
+        closable
+        variant="elevated"
+        prepend-icon="mdi-magnify"
+        v-if="getQuery.search"
+        @click:close="deletePropFromQuery('search')"
+      >
+        <strong class="mr-2">Search: </strong>{{ getQuery.search }}</v-chip
+      >
+
+      <v-chip
+        class="mr-4 pa-5 main-chip"
+        closable
+        variant="elevated"
+        v-if="getQuery.prio"
+        @click:close="deletePropFromQuery('prio')"
+      >
+        <img class="icon mr-2" :src="getPrioIMG(getQuery.prio.toLowerCase())" />
+        <strong class="mr-2">Prio: </strong> {{ getQuery.prio }}</v-chip
+      >
+
+      <v-chip
+        class="mr-4 pa-5 main-chip"
+        closable
+        variant="elevated"
+        prepend-icon="mdi-calendar-range"
+        v-if="getQuery.dueDateFrom"
+        @click:close="deletePropFromQuery('dueDateFrom')"
+      >
+        <strong class="mr-2">Date From: </strong
+        >{{ formatDate(getQuery.dueDateFrom) }}</v-chip
+      >
+
+      <v-chip
+        class="mr-4 pa-5 main-chip"
+        closable
+        variant="elevated"
+        prepend-icon="mdi-calendar-range"
+        @click:close="deletePropFromQuery('dueDateTo')"
+        v-if="getQuery.dueDateTo"
+      >
+        <strong class="mr-2">Date To: </strong
+        >{{ formatDate(getQuery.dueDateTo) }}</v-chip
+      >
+    </div>
+    <strong v-if="getQuery.contacts && getQuery.contacts.length > 0"
+      >Contacts</strong
+    >
+    <div v-if="getQuery.contacts" class="mt-2 mb-4">
+      <v-chip
+        class="mr-4 child-chip"
+        closable
+        prepend-icon="mdi-account"
+        v-for="contact in getQuery.contacts"
+        :key="contact"
+        @click:close="deletePropFromQuery('contacts', contact)"
+        >{{ filterUserFromID(contact).firstName }}
+        {{ filterUserFromID(contact).lastName }}</v-chip
+      >
+    </div>
+
+    <strong v-if="getQuery.category && getQuery.category.length > 0"
+      >Category</strong
+    >
+    <div v-if="getQuery.category" class="mt-2">
+      <v-chip
+        class="mr-4 child-chip"
+        closable
+        prepend-icon="mdi-shape"
+        v-for="cate in getQuery.category"
+        :key="cate"
+        @click:close="deletePropFromQuery('category', cate)"
+        >{{ cate }}</v-chip
+      >
+    </div>
+  </div>
+
   <DialogFilterSettings
     v-if="openFilterOptionDialog"
     @close="openFilterOptionDialog = false"
@@ -26,7 +109,7 @@
     :all-tasks="taskStore().tasks"
     :all-users="useUserStore().allUsers"
     :filter-options="filterOptions"
-    :filter-tasks="filterArray"
+    :filter-options-from-query="getQuery"
   ></DialogFilterSettings>
 
   <v-container
@@ -76,33 +159,36 @@
 <script setup>
 import { taskStore } from "@/stores/task";
 
-
-
-
-
 const openFilterOptionDialog = ref(false);
 const filterOptions = ref({});
-const filterArray = ref()
 const route = useRoute();
 const router = useRouter();
+
+const getQuery = computed(() => {
+  return route.query.filter ? JSON.parse(route.query.filter) : {};
+});
+
 const allTasks = computed(() => {
-  return search(route.query.filter, taskStore().tasks);
+  return search(getQuery.value ? getQuery.value.search : "", taskStore().tasks);
 });
 
 const filter = computed({
   get() {
-    return route.query.filter;
+    return getQuery.value ? getQuery.value.search : "";
   },
   set(val) {
-    router.push({
+    const newQuery = route.query.filter
+      ? JSON.stringify({ ...JSON.parse(route.query.filter), search: val })
+      : JSON.stringify({ search: val });
+    router.replace({
       path: "board",
-      query: { filter: val },
+      query: { filter: newQuery },
     });
   },
 });
 
 const search = (searchKeyword, array) => {
-  array = filterArray.value ? filterArray.value : array;
+  array = filterWithOptions(array);
   if (!searchKeyword) return array;
   const filterProperty = ["category", "prio", "status", "title"];
   searchKeyword = searchKeyword.toLowerCase();
@@ -113,12 +199,60 @@ const search = (searchKeyword, array) => {
   });
 };
 
-const saveFilterOptions  = ($filterOptions) => {
+const filterWithOptions = (array) => {
+  if (getQuery.value == {}) return array;
+
+  if (
+    getQuery.value &&
+    getQuery.value.category &&
+    getQuery.value.category.length !== 0 &&
+    array.length !== 0
+  ) {
+    array = multiplyFilter(array, getQuery.value.category, "category");
+  }
+
+  if (
+    getQuery.value &&
+    getQuery.value.contacts &&
+    getQuery.value.contacts.length !== 0 &&
+    array.length !== 0
+  ) {
+    array = multiplyFilter(array, getQuery.value.contacts, "assignedTo");
+  }
+
+  if (getQuery.value && getQuery.value.prio && array.length !== 0) {
+    array = filterPrio(array, getQuery.value.prio);
+  }
+
+  if (
+    (getQuery.value && getQuery.value.dueDateFrom && array.length !== 0) ||
+    (getQuery.value && getQuery.value.dueDateTo && array.length !== 0)
+  ) {
+    array = filterDueDateRange(
+      getQuery.value.dueDateFrom,
+      getQuery.value.dueDateTo,
+      array
+    );
+  }
+
+  console.log(array);
+
+  return array;
+};
+
+const saveFilterOptions = ($filterOptions) => {
   console.log($filterOptions);
-  filterOptions.value = $filterOptions[0];
-  filterArray.value = $filterOptions[1]
+  saveFilterOptionsToQuery($filterOptions);
+  filterOptions.value = $filterOptions;
   openFilterOptionDialog.value = false;
-}
+};
+
+const saveFilterOptionsToQuery = (filterOptions) => {
+  router.replace({
+    path: "board",
+    query: { filter: JSON.stringify(filterOptions) },
+  });
+};
 
 const todo = computed(() => {
   return allTasks.value.filter((t) => t.status == "todo");
@@ -144,6 +278,22 @@ const changeTask = async (event) => {
   }
 };
 
+const deletePropFromQuery = (key, value = undefined) => {
+  console.log(value);
+  if (value) {
+    console.log(getQuery.value[key].indexOf(value));
+    getQuery.value[key].splice(getQuery.value[key].indexOf(value), 1);
+  } else {
+    delete getQuery.value[key];
+  }
+
+  console.log(getQuery.value);
+  router.replace({
+    path: "board",
+    query: { filter: JSON.stringify(getQuery.value) },
+  });
+};
+
 const openFilterDialog = () => {
   openFilterOptionDialog.value = true;
 };
@@ -167,5 +317,13 @@ header {
     align-items: center;
     padding: 0;
   }
+}
+
+.main-chip {
+  background-color: $dark-navy;
+}
+
+.child-chip {
+  background-color: $white;
 }
 </style>

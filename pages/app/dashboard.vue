@@ -172,7 +172,7 @@ const navigateToBoard = (filterValue) => {
 
   router.push({
       path: "board",
-      query: { filter: filterValue },
+      query: { filter: JSON.stringify({search: filterValue, test: 'abc'}) },
     });
 }
 

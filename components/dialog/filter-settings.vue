@@ -9,7 +9,7 @@
         <p><strong>Filter Contacts </strong></p>
         <v-divider class="border-opacity-100"></v-divider>
         <v-select
-          v-model="filterOptions.contacts"
+          v-model="getFilterOptions.contacts"
           class="w-100 mt-6"
           clearable
           chips
@@ -24,7 +24,7 @@
         <p><strong> Filter Category</strong></p>
         <v-divider class="border-opacity-100"></v-divider>
         <v-select
-          v-model="filterOptions.category"
+          v-model="getFilterOptions.category"
           class="w-100 mt-6"
           clearable
           chips
@@ -42,7 +42,7 @@
           variant="solo"
           label="Select Prio"
           :items="['Urgent', 'Medium', 'Low']"
-          v-model="filterOptions.prio"
+          v-model="getFilterOptions.prio"
         ></v-select>
 
         <p><strong>Filter Due Date Range</strong></p>
@@ -51,7 +51,7 @@
           <div class="date w-50">
             <label for="startDate">From Date</label>
             <v-text-field
-              v-model="filterOptions.dueDateFrom"
+              v-model="getFilterOptions.dueDateFrom"
               required
               variant="solo"
               type="date"
@@ -62,7 +62,7 @@
           <div class="date w-50">
             <label for="toDate">To Date</label>
             <v-text-field
-              v-model="filterOptions.dueDateTo"
+              v-model="getFilterOptions.dueDateTo"
               required
               variant="solo"
               type="date"
@@ -99,12 +99,16 @@ const props = defineProps({
   allTasks: Array,
   allUsers: Array,
   filterOptions: Object,
-  filterTasks: Array,
+  filterOptionsFromQuery: Object,
 });
 
 const emit = defineEmits(["close", "save"]);
 
-const optionFilterTasks = ref([]);
+const getFilterOptions = ref();
+
+onMounted(() => {
+  getFilterOptions.value = props.filterOptionsFromQuery ?? props.filterOptions;
+});
 
 const getUserWithTitle = props.allUsers.map((user) => {
   return { ...user, title: `${user.firstName} ${user.lastName}` };
@@ -121,69 +125,8 @@ const category = [
   "Sales",
 ];
 
-onMounted(() => {
-  optionFilterTasks.value = props.allTasks;
-});
-
 const saveFilterOptions = () => {
-  filterContacts(props.filterOptions.contacts);
-  filterCategory(props.filterOptions.category);
-  filterPrio(props.filterOptions.prio);
-  filterDueDateRange(
-    props.filterOptions.dueDateFrom,
-    props.filterOptions.dueDateTo
-  );
-  emit("save", [props.filterOptions, optionFilterTasks.value]);
-};
-
-const filterContacts = (contacts) => {
-  if (!contacts || contacts.length <= 0) return;
-  optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
-    return contacts.some((contact) => {
-      return task.assignedTo.indexOf(contact) !== -1;
-    });
-  });
-};
-
-const filterCategory = (category) => {
-  if (!category || category.length <= 0) return;
-  optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
-    return category.some((categ) => {
-      return task.category.indexOf(categ) !== -1;
-    });
-  });
-};
-
-const filterPrio = (prio) => {
-  if (!prio) return;
-  optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
-    return task.prio == prio.toLowerCase();
-  });
-};
-
-const filterDueDateRange = (startDate, endDate) => {
-  if (!startDate && !endDate) return;
-
-  if (startDate && endDate) {
-    optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
-      return (
-        new Date(task.dueDate) < new Date(endDate) &&
-        new Date(task.dueDate) > new Date(startDate)
-      );
-    });
-  }
-
-  if (startDate && !endDate) {
-    optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
-      return new Date(task.dueDate) > new Date(startDate);
-    });
-  }
-
-  if (!startDate && endDate) {
-    optionFilterTasks.value = optionFilterTasks.value.filter((task) => {
-      return new Date(task.dueDate) < new Date(endDate);
-    });
-  }
+  emit("save", getFilterOptions.value);
 };
 
 console.log(props);
