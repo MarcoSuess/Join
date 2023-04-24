@@ -31,12 +31,18 @@
         :error-messages="v$.category.$errors.map((e) => e.$message)"
         @input="v$.category.$touch"
         @blur="v$.category.$touch"
+        @update:menu="useCategoryStore().loadCategories"
         :class="{ warningBorderSelect: v$.category.$errors.length }"
         placeholder="Select a task category"
         class="w-75"
-        :items="category"
+        :items="useCategoryStore().allCategories"
+        item-title="value"
+        item-value="id"
         variant="solo"
-      ></v-select>
+        :loading="useCategoryStore().loading"
+        no-data-text="Fetch Data ..."
+      >
+      </v-select>
 
       <div class="text-subtitle-1 text-medium-emphasis w-75">Assigned to</div>
       <v-select
@@ -182,6 +188,7 @@ import { useUserStore } from "@/stores/user";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { taskStore } from "@/stores/task";
+import { useCategoryStore } from "@/stores/category";
 
 const props = defineProps({
   status: { default: "create" },
@@ -194,21 +201,10 @@ const getUserWithTitle = useUserStore().allUsers.map((user) => {
   return { ...user, title: `${user.firstName} ${user.lastName}` };
 });
 
-const category = [
-  "Management",
-  "Costumer Service",
-  "Marketing",
-  "Team",
-  "Design",
-  "IT",
-  "Media",
-  "Sales",
-];
-
 const initialState = {
   title: props.taskData?.title || "",
   description: props.taskData?.description || "",
-  category: props.taskData?.category || null,
+  category: null,
   assignedTo: props.taskData?.assignedTo || [],
   dueDate: props.taskData?.dueDate || null,
   prio: props.taskData?.prio || "urgent",
@@ -217,11 +213,16 @@ const initialState = {
     : [],
 };
 
-
-
-
 const state = reactive({
   ...initialState,
+});
+
+onBeforeMount(async () => {
+  if (!props.taskData?.category) return;
+  const get = await useCategoryStore().getCategoryByID(props.taskData.category);
+  state.category = get.value;
+  initialState.category = get.value;
+  console.log(initialState);
 });
 
 const rules = {
@@ -241,7 +242,9 @@ const clearForm = () => {
   }
 
   if (props.status === "edit") {
-    state.subTasks = JSON.parse(JSON.stringify(props.taskData?.subTasks)) || [];
+    state.subTasks = props.taskData?.subTasks
+      ? JSON.parse(JSON.stringify(props.taskData?.subTasks))
+      : [];
   } else {
     state.subTasks = [];
   }

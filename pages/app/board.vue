@@ -69,10 +69,10 @@
         >{{ formatDate(getQuery.dueDateTo) }}</v-chip
       >
     </div>
-    <strong v-if="getQuery.contacts && getQuery.contacts.length > 0"
+    <strong v-if="getQuery && getQuery.contacts && getQuery.contacts.length > 0"
       >Contacts</strong
     >
-    <div v-if="getQuery.contacts" class="mt-2 mb-4">
+    <div v-if="getQuery && getQuery.contacts" class="mt-2 mb-4">
       <v-chip
         class="mr-4 child-chip"
         closable
@@ -80,24 +80,24 @@
         v-for="contact in getQuery.contacts"
         :key="contact"
         @click:close="deletePropFromQuery('contacts', contact)"
-        >{{ filterUserFromID(contact).firstName }}
-        {{ filterUserFromID(contact).lastName }}</v-chip
+        >{{ filterUserFromID(contact) ?  filterUserFromID(contact).firstName + ' ' + filterUserFromID(contact).lastName : 'Not Found'}}
+        </v-chip
       >
     </div>
 
-    <strong v-if="getQuery.category && getQuery.category.length > 0"
+    <strong v-if="getQuery && getQuery.category && getQuery.category.length > 0"
       >Category</strong
     >
-    <div v-if="getQuery.category" class="mt-2">
-      <v-chip
+    <div v-if="getQuery && getQuery.category" class="mt-2">
+      <BoardCategoryChip
         class="mr-4 child-chip"
         closable
         prepend-icon="mdi-shape"
         v-for="cate in getQuery.category"
         :key="cate"
         @click:close="deletePropFromQuery('category', cate)"
-        >{{ cate }}</v-chip
-      >
+        :category-id="cate"
+      />
     </div>
   </div>
 
@@ -154,18 +154,49 @@
       />
     </div>
   </v-container>
+
+  <v-snackbar
+      v-model="openSnackbar"
+      :timeout="30000"
+    >
+    <v-icon color="warning" icon="mdi-alert" class="mr-4" size="large"></v-icon>
+    Filter Invalid,
+    Change Filter Options
+
+      <template v-slot:actions>
+        <v-btn
+        class="snackbar-btn"
+          variant="text"
+          @click="openFilterDialog(), openSnackbar = false"
+        >
+         Open Filter Options
+        </v-btn>
+      </template>
+    </v-snackbar>
+
 </template>
 
 <script setup>
 import { taskStore } from "@/stores/task";
 
+
+
 const openFilterOptionDialog = ref(false);
 const filterOptions = ref({});
 const route = useRoute();
 const router = useRouter();
+const openSnackbar = ref(false)
+
+
 
 const getQuery = computed(() => {
-  return route.query.filter ? JSON.parse(route.query.filter) : {};
+  try {
+    return route.query.filter ? JSON.parse(route.query.filter) : {};
+  } catch (error) {
+    console.log(error);
+    openSnackbar.value = true;
+  }
+
 });
 
 const allTasks = computed(() => {
@@ -211,6 +242,7 @@ const filterWithOptions = (array) => {
     array = multiplyFilter(array, getQuery.value.category, "category");
   }
 
+  
   if (
     getQuery.value &&
     getQuery.value.contacts &&
@@ -326,4 +358,21 @@ header {
 .child-chip {
   background-color: $white;
 }
+
+.v-snackbar {
+
+  .snackbar-btn{
+      background-color: $secondary;
+      color: white;
+  }
+
+  :deep(.v-overlay__content) {
+    div {
+      background-color: $dark-navy;
+    }
+    
+  }
+}
+
+
 </style>

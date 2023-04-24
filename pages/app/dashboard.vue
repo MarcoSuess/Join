@@ -30,7 +30,9 @@
               v-bind="props"
               @click="navigateToBoard('inProgress')"
             >
-              <strong class="text-h3">{{ filterTaskStatus('inProgress').length }}</strong>
+              <strong class="text-h3">{{
+                filterTaskStatus("inProgress").length
+              }}</strong>
               <p class="text-h5">Tasks in Progress</p>
             </v-card>
           </v-hover>
@@ -44,7 +46,9 @@
               v-bind="props"
               @click="navigateToBoard('awaitingFeedback')"
             >
-              <strong class="text-h3">{{ filterTaskStatus('awaitingFeedback').length }}</strong>
+              <strong class="text-h3">{{
+                filterTaskStatus("awaitingFeedback").length
+              }}</strong>
               <p class="text-h5">Awaiting Feedback</p>
             </v-card>
           </v-hover>
@@ -59,7 +63,7 @@
               :elevation="isHovering ? 16 : 2"
               :class="{ 'on-hover': isHovering }"
               v-bind="props"
-              @click="navigateToBoard('urgent')"
+              @click="navigateToBoard('urgent', filterNearestDate[0]?.dueDate)"
             >
               <div class="left d-flex w-50 align-center">
                 <img
@@ -82,7 +86,9 @@
               <div
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
-                <p class="text-h6">{{ formatDate(filterNearestDate[0]?.dueDate ) }}</p>
+                <p class="text-h6">
+                  {{ formatDate(filterNearestDate[0]?.dueDate) }}
+                </p>
                 <strong class="text-h5">Upcoming Deadline</strong>
               </div>
             </v-card>
@@ -108,7 +114,7 @@
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
                 <strong class="text-h3">{{
-                  filterTaskStatus('todo').length
+                  filterTaskStatus("todo").length
                 }}</strong>
                 <p class="text-h5">To-do</p>
               </div>
@@ -133,7 +139,7 @@
                 class="right w-50 d-flex flex-column align-center justify-center"
               >
                 <strong class="text-h3">{{
-                  filterTaskStatus('done').length
+                  filterTaskStatus("done").length
                 }}</strong>
                 <p class="text-h5">Done</p>
               </div>
@@ -166,16 +172,33 @@ const filterNearestDate = tasks.sort((a, b) => {
   return distanceA - distanceB;
 });
 
-
-const navigateToBoard = (filterValue) => {
+const navigateToBoard = (filterValue, upComingDeadLine = null) => {
   const router = useRouter();
 
-  router.push({
-      path: "board",
-      query: { filter: JSON.stringify({search: filterValue, test: 'abc'}) },
-    });
-}
+  if (filterValue == "urgent") {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
+    const day = `${today.getDate()}`.padStart(2, "0");
+    const nowDate = year + "-" + month + "-" + day;
 
+    router.push({
+      path: "board",
+      query: {
+        filter: JSON.stringify({
+          prio: filterValue,
+          dueDateFrom: nowDate,
+          dueDateTo: upComingDeadLine,
+        }),
+      },
+    });
+  } else {
+    router.push({
+      path: "board",
+      query: { filter: JSON.stringify({ search: filterValue }) },
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped>

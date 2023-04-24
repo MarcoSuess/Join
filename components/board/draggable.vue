@@ -10,6 +10,7 @@
       v-for="item in itemList"
       :key="item.id"
       @click="showTaskDialog(item)"
+      
     >
       <v-hover v-slot="{ isHovering, props }" open-delay="32">
         <v-card
@@ -17,7 +18,7 @@
           :elevation="isHovering ? 16 : 2"
           :class="{ 'on-hover': isHovering }"
         >
-          <v-chip> {{ item.category }} </v-chip>
+          <BoardCategoryChip :category-id="item.category" />
           <h5 class="mt-4">{{ item.title }}</h5>
           <div
             v-if="item.subTasks"
@@ -27,7 +28,7 @@
 
             <h6>
               {{
-                getSubTaskDoneLength(item.subTasks) + "/" + item.subTasks.length
+                getSubTaskDoneLength(item.subTasks) + "/" + item.subTasks.length  
               }}
               Done
             </h6>
@@ -86,6 +87,8 @@ const props = defineProps({
 
 const emit = defineEmits(["changeItem"]);
 
+
+
 const changeItem = ($event, itemStatus) => {
   emit("changeItem", [$event, itemStatus]);
 };
@@ -114,11 +117,15 @@ const closeEditTaskDialogSave = (task) => {
 };
 
 
-const deleteTask = async(task) => {
+const deleteTask = async(task) => { 
     await taskStore().deleteTask(task)
     openShowTaskDialog.value = false;
     
 }
+
+
+
+
 
 console.log(props.itemList);
 </script>

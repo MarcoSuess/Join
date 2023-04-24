@@ -11,7 +11,7 @@
 
       <template v-slot:actions>
         <v-btn
-          color="blue"
+          class="snackbar-btn"
           variant="text"
           @click="routeToBoard"
         >
@@ -36,6 +36,27 @@
   }
 
 </script>
+
+
+<style lang="scss" scoped>
+
+.v-snackbar {
+
+.snackbar-btn{
+    background-color: $secondary;
+    color: white;
+}
+
+:deep(.v-overlay__content) {
+  div {
+    background-color: $dark-navy;
+  }
+  
+}
+}
+
+
+</style>
 
 
 

@@ -25,13 +25,18 @@
         <v-divider class="border-opacity-100"></v-divider>
         <v-select
           v-model="getFilterOptions.category"
+          @update:menu="useCategoryStore().loadCategories"
           class="w-100 mt-6"
           clearable
           chips
           placeholder="Select Category"
-          :items="category"
           multiple
           variant="solo"
+          :items="useCategoryStore().allCategories"
+          item-title="value"
+          item-value="id"
+          :loading="useCategoryStore().loading"
+          no-data-text="Fetch Data ..."
         ></v-select>
 
         <p><strong>Filter Prio </strong></p>
@@ -95,6 +100,8 @@
 </template>
 
 <script setup>
+import { useCategoryStore } from "@/stores/category";
+
 const props = defineProps({
   allTasks: Array,
   allUsers: Array,
@@ -113,17 +120,6 @@ onMounted(() => {
 const getUserWithTitle = props.allUsers.map((user) => {
   return { ...user, title: `${user.firstName} ${user.lastName}` };
 });
-
-const category = [
-  "Management",
-  "Costumer Service",
-  "Marketing",
-  "Team",
-  "Design",
-  "IT",
-  "Media",
-  "Sales",
-];
 
 const saveFilterOptions = () => {
   emit("save", getFilterOptions.value);

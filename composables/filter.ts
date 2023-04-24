@@ -23,36 +23,28 @@ export const filterDueDateRange = (startDate: string, endDate: string, array: Ta
     if (!startDate && !endDate) return;
 
     if (startDate && endDate) {
-        array.filter((task) => {
+      return array.filter((task) => {
             return (
-                new Date(task.dueDate) < new Date(endDate) &&
-                new Date(task.dueDate) > new Date(startDate)
+                new Date(task.dueDate) <= new Date(endDate) &&
+                new Date(task.dueDate) >= new Date(startDate)
             );
         });
     }
 
     if (startDate && !endDate) {
         return array.filter((task) => {
-            return new Date(task.dueDate) > new Date(startDate);
+            return new Date(task.dueDate) >= new Date(startDate);
         });
     }
 
     if (!startDate && endDate) {
+      
+        
         return array.filter((task) => {
-            return new Date(task.dueDate) < new Date(endDate);
+            return new Date(task.dueDate) <= new Date(endDate);
         });
     }
 };
 
 
 
-export function isEmpty(obj: any) {
-    for(var prop in obj) {
-            if(obj[prop].length <= 0) {
-                return true
-            }
-            
-    }
-
-    return false;
-}
